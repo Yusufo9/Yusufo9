@@ -1,0 +1,82 @@
+<svg width="112" height="48" viewBox="206 0 112 48" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    text {
+      user-select: none;
+    }
+
+    .gitascii-canvas-bg {
+      fill: #0d1117;
+      transition: fill 0.3s ease;
+    }
+
+    @media (prefers-color-scheme: light) {
+      .gitascii-canvas-bg {
+        fill: #ffffff !important;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .gitascii-canvas-bg {
+        fill: #0d1117 !important;
+      }
+    }
+  </style>
+<defs>
+        
+    <linearGradient id="grad-pill-github-207-2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+<stop offset="10%" stop-color="#111111"></stop>
+<stop offset="50%" stop-color="#eeeeee"></stop>
+<stop offset="60%" stop-color="#ffffff"></stop>
+<stop offset="80%" stop-color="#111111"></stop>
+<stop offset="100%" stop-color="#555555"></stop>
+      <animateTransform attributeName="gradientTransform" type="rotate" from="0 0.5 0.5" to="360 0.5 0.5" dur="14s" repeatCount="indefinite" />
+    </linearGradient>
+  
+
+    <linearGradient id="grad-pill-discord-329-2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+<stop offset="10%" stop-color="#111111"></stop>
+<stop offset="50%" stop-color="#eeeeee"></stop>
+<stop offset="60%" stop-color="#5865F2"></stop>
+<stop offset="80%" stop-color="#111111"></stop>
+<stop offset="100%" stop-color="#555555"></stop>
+      <animateTransform attributeName="gradientTransform" type="rotate" from="0 0.5 0.5" to="360 0.5 0.5" dur="14s" repeatCount="indefinite" />
+    </linearGradient>
+  
+
+    <linearGradient id="grad-pill-gmail-499-2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+<stop offset="10%" stop-color="#111111"></stop>
+<stop offset="50%" stop-color="#eeeeee"></stop>
+<stop offset="60%" stop-color="#EA4335"></stop>
+<stop offset="80%" stop-color="#111111"></stop>
+<stop offset="100%" stop-color="#555555"></stop>
+      <animateTransform attributeName="gradientTransform" type="rotate" from="0 0.5 0.5" to="360 0.5 0.5" dur="14s" repeatCount="indefinite" />
+    </linearGradient>
+  
+      </defs>
+    <g id="pill-github-207-2">
+      <!-- Outer rotating gradient border -->
+      <rect x="207" y="2" width="110" height="44" rx="22" ry="22" fill="none" stroke="url(#grad-pill-github-207-2)" stroke-width="1.8" />
+
+      <!-- Dark container background with subtle glow -->
+      <rect class="anim-target" x="208" y="3" width="108" height="42" rx="21" ry="21" fill="#141414"  style="animation-delay: 0ms; transform-origin: center;" />
+
+      <!-- Inner highlight layer -->
+      <rect class="anim-target" x="208" y="3" width="108" height="42" rx="21" ry="21" fill="rgba(255,255,255,0.03)"  style="animation-delay: 35ms; transform-origin: center;" />
+
+      <!-- Icon & Text Content -->
+      <g transform="translate(221, 15) scale(1)">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path class="anim-target" fill="#ffffff" fill-rule="evenodd" clip-rule="evenodd" d="M9 1.5C4.858 1.5 1.5 4.858 1.5 9c0 3.314 2.149 6.126 5.13 7.12.375.068.513-.163.513-.361v-1.266c-2.087.454-2.527-.946-2.527-.946-.341-.867-.833-1.098-.833-1.098-.681-.466.052-.456.052-.456.753.053 1.15.773 1.15.773.67 1.147 1.756.816 2.184.624.068-.485.262-.816.476-1.003-1.666-.19-3.418-.833-3.418-3.708 0-.819.292-1.488.773-2.013-.078-.19-.335-.952.073-1.986 0 0 .63-.202 2.063.769.598-.166 1.24-.249 1.878-.252.637.003 1.279.086 1.878.252 1.432-.971 2.061-.769 2.061-.769.41 1.034.153 1.796.075 1.986.482.525.772 1.194.772 2.013 0 2.883-1.755 3.515-3.426 3.702.27.233.51.691.51 1.393v2.065c0 .201.136.433.517.359C14.354 15.122 16.5 12.312 16.5 9c0-4.142-3.358-7.5-7.5-7.5z" style="animation-delay: 71ms; transform-origin: center;" />
+        </svg>
+      </g>
+      <text class="anim-target" x="247" y="29" text-anchor="start" fill="#f5f5f5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="500" letter-spacing="0.2" style="animation-delay: 106ms; transform-origin: center;">Yusufo9</text>
+    </g>
+</svg>

@@ -36,7 +36,12 @@ ROOT = Path(__file__).resolve().parent.parent
 CONFIG = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
 USERNAME = CONFIG["username"]
 TEMPLATE = ROOT / "templates" / "profile.svg"
-OUTPUT = ROOT / "dist" / "profile.svg"
+DIST = ROOT / "dist"
+
+# widget ids inside templates/profile.svg (GitAscii layout, y = translate offset)
+HEADER_WIDGET = "widget_1789911876234"   # avatar + core stack (y 0..260)
+PILLS_WIDGET = "widget_1789912840027"    # social pills (y 268..312) - rendered as separate clickable images
+BODY_TOP = 320                           # everything from ABOUT // DOSSIER downwards
 
 API = "https://api.github.com"
 NOW = datetime.now(timezone.utc)
@@ -229,11 +234,17 @@ def compute_streaks(days: dict[date, int]) -> dict:
 
 
 def fetch_events() -> list[dict]:
+    """Up to 300 most recent public events (GitHub keeps ~90 days)."""
+    events: list[dict] = []
     try:
-        return rest(f"/users/{USERNAME}/events/public", per_page=60)
+        for page in range(1, 4):
+            batch = rest(f"/users/{USERNAME}/events/public", per_page=100, page=page)
+            events.extend(batch)
+            if len(batch) < 100:
+                break
     except requests.HTTPError as exc:  # never let the activity feed break the build
         print(f"  warning: events unavailable ({exc})")
-        return []
+    return events
 
 
 def fetch_avatar_data_uri(url: str) -> str:
@@ -407,21 +418,60 @@ def render_minecraft(user: dict, contrib: dict, events: list[dict]) -> tuple[str
 # --------------------------------------------------------------------------- #
 # DNA archetype card
 # --------------------------------------------------------------------------- #
-def score(value: float, cap: float) -> int:
-    """0-100 on a log curve so a young account still shows some DNA."""
-    if value <= 0:
-        return 0
-    return max(0, min(100, round(100 * math.log1p(value) / math.log1p(cap))))
+TRAITS = ["Builder", "Maintainer", "Open Source", "Community", "Explorer"]
+
+# Every public GitHub event type maps to the characteristics it expresses.
+# Points are summed per trait; the card shows each trait's share of all activity.
+EVENT_TRAITS: dict[str, dict[str, int]] = {
+    "PushEvent":                     {"Builder": 3},
+    "CreateEvent":                   {"Builder": 1, "Explorer": 2},
+    "DeleteEvent":                   {"Maintainer": 2},
+    "PullRequestEvent":              {"Maintainer": 2, "Open Source": 1},
+    "PullRequestReviewEvent":        {"Community": 3, "Maintainer": 1},
+    "PullRequestReviewCommentEvent": {"Community": 2},
+    "IssuesEvent":                   {"Maintainer": 2},
+    "IssueCommentEvent":             {"Community": 2},
+    "CommitCommentEvent":            {"Community": 2},
+    "ReleaseEvent":                  {"Maintainer": 3},
+    "GollumEvent":                   {"Maintainer": 2},
+    "ForkEvent":                     {"Open Source": 3, "Explorer": 1},
+    "WatchEvent":                    {"Explorer": 3},
+    "PublicEvent":                   {"Open Source": 3},
+    "MemberEvent":                   {"Community": 2},
+    "SponsorshipEvent":              {"Community": 3},
+}
+FOREIGN_REPO_BONUS = {"Open Source": 3}  # any event in a repo you don't own
+
+# Lifetime baseline from the contribution graph, so the card isn't only the last 90 days.
+LIFETIME_TRAITS = {
+    "commits":        {"Builder": 1},
+    "prs":            {"Maintainer": 1, "Open Source": 1},
+    "issues":         {"Maintainer": 1},
+    "reviews":        {"Community": 2},
+    "repos_created":  {"Explorer": 1},
+    "contributed_to": {"Open Source": 3},
+    "followers":      {"Community": 1},
+    "starred":        {"Explorer": 1},
+}
 
 
-def compute_dna(user: dict, contrib: dict) -> list[tuple[str, int]]:
-    return [
-        ("Builder", score(contrib["commits"], 600)),
-        ("Maintainer", score(user["repos"] * 3 + contrib["prs"] * 2 + contrib["issues"], 120)),
-        ("Open Source", score(user["contributed_to"] * 4 + user["stars"] * 2 + user["forked_repos"], 120)),
-        ("Community", score(user["followers"] * 2 + user["following"] + contrib["reviews"] * 3 + contrib["issues"], 150)),
-        ("Explorer", score(user["starred"] + len(user["languages"]) * 4 + user["repos"], 120)),
-    ]
+def compute_dna(user: dict, contrib: dict, events: list[dict]) -> list[tuple[str, int]]:
+    points = dict.fromkeys(TRAITS, 0.0)
+
+    for ev in events:
+        for trait, w in EVENT_TRAITS.get(ev["type"], {"Explorer": 1}).items():
+            points[trait] += w
+        if not ev["repo"]["name"].lower().startswith(USERNAME.lower() + "/"):
+            for trait, w in FOREIGN_REPO_BONUS.items():
+                points[trait] += w
+
+    source = {**contrib, "contributed_to": user["contributed_to"], "followers": user["followers"], "starred": user["starred"]}
+    for key, traits in LIFETIME_TRAITS.items():
+        for trait, w in traits.items():
+            points[trait] += source.get(key, 0) * w
+
+    total = sum(points.values()) or 1
+    return [(trait, round(100 * points[trait] / total)) for trait in TRAITS]
 
 
 def render_dna(dna: list[tuple[str, int]]) -> str:
@@ -468,7 +518,7 @@ def main() -> None:
     contrib = fetch_contributions(user["created_at"])
     events = fetch_events()
     avatar = fetch_avatar_data_uri(user["avatar_url"])
-    dna = compute_dna(user, contrib)
+    dna = compute_dna(user, contrib, events)
     chat, prompt = render_minecraft(user, contrib, events)
 
     cur_n, cur_s, cur_e = contrib["current"]
@@ -505,10 +555,75 @@ def main() -> None:
             raise KeyError(f"no value for placeholder {{{{{key}}}}}")
         return values[key]
 
-    out = re.sub(r"\{\{([A-Z0-9_]+)\}\}", sub, src)
-    OUTPUT.parent.mkdir(exist_ok=True)
-    OUTPUT.write_text(out, encoding="utf-8", newline="\n")
-    print(f"  wrote {OUTPUT.relative_to(ROOT)} ({len(out) // 1024} KB)")
+    write_outputs(re.sub(r"\{\{([A-Z0-9_]+)\}\}", sub, src))
+
+
+# --------------------------------------------------------------------------- #
+# Output: the profile is one GitAscii canvas, but links inside an <img> are dead
+# on GitHub, so the social pill row is emitted as separate images the README
+# wraps in <a> tags. Everything else keeps its exact original layout.
+# --------------------------------------------------------------------------- #
+WIDGET_RE = re.compile(r'^    <g transform="translate\((\d+), (\d+)\)" id="widget-(widget_\d+)">', re.M)
+
+
+def split_widgets(svg: str) -> tuple[str, list[tuple[int, int, str, str]], str]:
+    """Return (global <style>, [(x, y, id, markup)], footer) from the canvas."""
+    style = re.search(r"<style>.*?</style>", svg, re.S).group(0)
+    starts = list(WIDGET_RE.finditer(svg))
+    footer_at = svg.index('  <text x="792"')
+    widgets = []
+    for i, m in enumerate(starts):
+        stop = starts[i + 1].start() if i + 1 < len(starts) else footer_at
+        widgets.append((int(m.group(1)), int(m.group(2)), m.group(3), svg[m.start():stop].rstrip() + "\n"))
+    footer = svg[footer_at:svg.rindex("</svg>")]
+    return style, widgets, footer
+
+
+def canvas(style: str, body: str, width: int, height: int) -> str:
+    return (
+        f'<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" fill="none" '
+        f'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n{style}\n{body}{"" if body.endswith(chr(10)) else chr(10)}</svg>\n'
+    )
+
+
+def shift(markup: str, dy: int) -> str:
+    return re.sub(
+        r'^    <g transform="translate\((\d+), (\d+)\)"',
+        lambda m: f'    <g transform="translate({m.group(1)}, {int(m.group(2)) - dy})"',
+        markup, count=1, flags=re.M,
+    )
+
+
+def write(name: str, content: str) -> None:
+    DIST.mkdir(exist_ok=True)
+    (DIST / name).write_text(content, encoding="utf-8", newline="\n")
+    print(f"  wrote dist/{name} ({len(content) // 1024} KB)")
+
+
+def write_outputs(svg: str) -> None:
+    style, widgets, footer = split_widgets(svg)
+    by_id = {w[2]: w for w in widgets}
+
+    # 1. header card (avatar + core stack)
+    write("header.svg", canvas(style, by_id[HEADER_WIDGET][3], 800, 260))
+
+    # 2. social pills, one file each so the README can link them
+    pills_svg = by_id[PILLS_WIDGET][3]
+    defs = re.search(r"<defs>.*?</defs>", pills_svg, re.S).group(0)
+    for m in re.finditer(r'    <g id="pill-([a-z]+)-(\d+)-\d+">.*?\n    </g>', pills_svg, re.S):
+        name, x = m.group(1), int(m.group(2))
+        width = int(re.search(r'<rect x="%d" y="2" width="(\d+)"' % x, m.group(0)).group(1)) + 2
+        pill = (
+            f'<svg width="{width}" height="48" viewBox="{x - 1} 0 {width} 48" fill="none" '
+            f'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n'
+            f"{style}\n{defs}\n{m.group(0)}\n</svg>\n"
+        )
+        write(f"pill-{name}.svg", pill)
+
+    # 3. body: every other widget, moved up so ABOUT // DOSSIER starts at y=0
+    body = "".join(shift(w[3], BODY_TOP) for w in widgets if w[2] not in (HEADER_WIDGET, PILLS_WIDGET))
+    footer = re.sub(r'y="(\d+)"', lambda m: f'y="{int(m.group(1)) - BODY_TOP}"', footer, count=1)
+    write("body.svg", canvas(style, body + footer, 800, 1380 - BODY_TOP))
 
 
 if __name__ == "__main__":
