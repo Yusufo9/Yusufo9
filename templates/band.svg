@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="{{HEIGHT}}" viewBox="0 0 800 {{HEIGHT}}" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace">
+  {{FONT_CSS}}
+  <style>
+    text { white-space: pre; }
+    .anim-target { opacity: 0; animation: band-in 900ms ease-out both; }
+    @keyframes band-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    .led { animation: band-blink 1.1s steps(1, end) infinite; }
+    @keyframes band-blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: .12; } }
+  </style>
+  <defs>
+    <radialGradient id="band-amb1" cx="24%" cy="12%" r="46%">
+      <stop offset="0%" stop-color="{{ACCENT}}" stop-opacity=".06"/><stop offset="100%" stop-color="{{ACCENT}}" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="band-amb2" cx="80%" cy="92%" r="52%">
+      <stop offset="0%" stop-color="#c084fc" stop-opacity=".11"/><stop offset="100%" stop-color="#c084fc" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="band-glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="800" height="{{HEIGHT}}" fill="#050308"/>
+  <rect width="800" height="{{HEIGHT}}" fill="url(#band-amb1)"/>
+  <rect width="800" height="{{HEIGHT}}" fill="url(#band-amb2)"/>
+  <rect x="1" y="1" width="798" height="{{INNER_H}}" fill="{{ACCENT}}" fill-opacity="0.05" stroke="{{ACCENT}}" stroke-opacity="0.3"/>
+  <rect x="16" y="16" width="8" height="8" fill="#ff5555" class="led" filter="url(#band-glow)"/>
+  <text class="anim-target" x="30" y="24" font-size="12" letter-spacing="1.6" fill="{{ACCENT}}">{{TITLE}}</text>
+  <text class="anim-target" x="786" y="24" font-size="12" letter-spacing="1.6" text-anchor="end" fill="#8a8a8a" style="animation-delay: 150ms">{{RIGHT}}</text>
+  {{BODY}}
+</svg>

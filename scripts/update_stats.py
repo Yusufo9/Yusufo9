@@ -46,6 +46,8 @@ BODY_TOP = (320, 524)                    # ABOUT // DOSSIER .. divider
 BODY_BOTTOM = (758, 1380)                # GITHUB METRICS .. Minecraft terminal
 README_TEMPLATE = ROOT / "templates" / "README.md"
 ICONS = ROOT / "templates" / "icons"
+FONTS = ROOT / "templates" / "fonts"
+BAND_TEMPLATE = ROOT / "templates" / "band.svg"
 
 API = "https://api.github.com"
 NOW = datetime.now(timezone.utc)
@@ -167,11 +169,12 @@ def fetch_user() -> dict:
         "repo_list": [n for n in nodes if not n["isArchived"]][:8],
         "created_at": datetime.fromisoformat(base["createdAt"].replace("Z", "+00:00")),
         "avatar_url": base["avatarUrl"],
-        "followers": base["followers"]["totalCount"],
-        "following": base["following"]["totalCount"],
+        # REST is what github.com/<user> displays (GraphQL omits orgs / suspended accounts)
+        "followers": profile.get("followers", base["followers"]["totalCount"]),
+        "following": profile.get("following", base["following"]["totalCount"]),
         "starred": base["starredRepositories"]["totalCount"],
         "contributed_to": base["repositoriesContributedTo"]["totalCount"],
-        "repos": base["repositories"]["totalCount"],
+        "repos": profile.get("public_repos", base["repositories"]["totalCount"]),
         "stars": stars,
         "forks": forks,
         "forked_repos": forked,
@@ -309,7 +312,7 @@ def clip(text: str, n: int) -> str:
 # --------------------------------------------------------------------------- #
 # Minecraft chat (recent GitHub events)
 # --------------------------------------------------------------------------- #
-MAX_LINE = 104  # ~11px monospace across the 776px chat viewport
+MAX_LINE = 96  # 13px JetBrains Mono (0.6em advance) across the 776px chat viewport
 
 
 def head_commit_message(repo: str, sha: str | None) -> str:
@@ -491,25 +494,26 @@ def render_dna(dna: list[tuple[str, int]]) -> str:
     for k in range(16):
         t = k / 15
         p = 1 - (1 - t) ** 2  # ease-out, like the original reveal
+        # 40 columns: │ + 2 + label 12 + bar 12 + 1 + pct 4 + 7 + │
         rows = []
         for label, pct in dna:
             v = round(pct * p)
-            filled = round(v * 16 / 100)
+            filled = round(v * 12 / 100)
             rows.append(
                 f'<tspan fill="{border}">│</tspan>  <tspan fill="{text}">{label:<12}</tspan>'
-                f'<tspan fill="{amber}">{"█" * filled}</tspan><tspan fill="{dim}">{" " * (16 - filled)}</tspan> '
-                f'<tspan fill="{red}" font-weight="bold">{v:>3}%</tspan>{" " * 13}<tspan fill="{border}">│</tspan>'
+                f'<tspan fill="{amber}">{"█" * filled}</tspan><tspan fill="{dim}">{" " * (12 - filled)}</tspan> '
+                f'<tspan fill="{red}" font-weight="bold">{v:>3}%</tspan>{" " * 7}<tspan fill="{border}">│</tspan>'
             )
-        hr = f'<tspan fill="{border}">│</tspan>  <tspan fill="{border}">{"─" * 46}</tspan><tspan fill="{border}">│</tspan>'
+        hr = f'<tspan fill="{border}">│</tspan>  <tspan fill="{border}">{"─" * 36}</tspan><tspan fill="{border}">│</tspan>'
         body = [
-            f'<tspan fill="{border}">┌{"─" * 48}┐</tspan>',
-            f'<tspan fill="{border}">│</tspan>{" " * 23}<tspan fill="{amber}" font-weight="bold">DNA</tspan>{" " * 22}<tspan fill="{border}">│</tspan>',
+            f'<tspan fill="{border}">┌{"─" * 38}┐</tspan>',
+            f'<tspan fill="{border}">│</tspan>{" " * 18}<tspan fill="{amber}" font-weight="bold">DNA</tspan>{" " * 17}<tspan fill="{border}">│</tspan>',
             hr,
             *rows,
             hr,
-            f'<tspan fill="{border}">│</tspan>  <tspan fill="{gold}" font-weight="bold">PRIMARY ARCHETYPE</tspan>{" " * 29}<tspan fill="{border}">│</tspan>',
-            f'<tspan fill="{border}">│</tspan>  <tspan fill="{amber}" font-weight="bold">&gt; THE {primary}</tspan>{" " * (40 - len(primary))}<tspan fill="{border}">│</tspan>',
-            f'<tspan fill="{border}">└{"─" * 48}┘</tspan>',
+            f'<tspan fill="{border}">│</tspan>  <tspan fill="{gold}" font-weight="bold">PRIMARY ARCHETYPE</tspan>{" " * 19}<tspan fill="{border}">│</tspan>',
+            f'<tspan fill="{border}">│</tspan>  <tspan fill="{amber}" font-weight="bold">&gt; THE {primary}</tspan>{" " * (30 - len(primary))}<tspan fill="{border}">│</tspan>',
+            f'<tspan fill="{border}">└{"─" * 38}┘</tspan>',
         ]
         frames.append(
             f'<g class="frame-{k}">'
@@ -533,20 +537,20 @@ REPO_ICON = (
 
 def repo_card(repo: dict, y: int) -> str:
     lang = repo.get("primaryLanguage") or {}
-    desc = clip(repo.get("description") or "No description yet", 62)
+    desc = clip(repo.get("description") or "No description yet", 50)
     meta = f"★ {repo['stargazerCount']}   ⑂ {repo['forkCount']}"
     parts = [
         f'<g class="repo-card" transform="translate(0, {y})">',
         f'<rect width="{CARD_W}" height="{CARD_H}" rx="10" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)"/>',
         f'<g transform="translate(16, 14) scale(1.1)"><path fill="#8b949e" d="{REPO_ICON}"/></g>',
-        f'<text x="44" y="24" fill="#f5f5f5" font-size="13" font-weight="700">{esc(repo["name"])}</text>',
-        f'<text x="44" y="42" fill="rgba(255,255,255,0.5)" font-size="11">{esc(desc)}</text>',
-        f'<text x="{CARD_W - 16}" y="42" text-anchor="end" fill="rgba(255,255,255,0.45)" font-size="11">{esc(meta)}</text>',
+        f'<text x="44" y="24" fill="#f5f5f5" font-size="15" font-weight="700">{esc(repo["name"])}</text>',
+        f'<text x="44" y="43" fill="rgba(255,255,255,0.55)" font-size="12">{esc(desc)}</text>',
+        f'<text x="{CARD_W - 16}" y="43" text-anchor="end" fill="rgba(255,255,255,0.5)" font-size="12">{esc(meta)}</text>',
     ]
     if lang:
         parts += [
             f'<circle cx="{CARD_W - 16 - 4}" cy="20" r="4" fill="{lang.get("color") or "#8b949e"}"/>',
-            f'<text x="{CARD_W - 16 - 14}" y="24" text-anchor="end" fill="rgba(255,255,255,0.7)" font-size="11">{esc(lang["name"])}</text>',
+            f'<text x="{CARD_W - 16 - 14}" y="24" text-anchor="end" fill="rgba(255,255,255,0.75)" font-size="12">{esc(lang["name"])}</text>',
         ]
     parts.append("</g>")
     return "".join(parts)
@@ -637,10 +641,28 @@ def split_widgets(svg: str) -> tuple[str, list[tuple[int, int, str, str]], str]:
     return style, widgets, footer
 
 
-def canvas(style: str, body: str, width: int, height: int) -> str:
+def font_css() -> str:
+    """@font-face rules with the woff2 files inlined (an <img> SVG cannot fetch fonts)."""
+    rules = []
+    for weight, file in ((400, "JetBrainsMono-Regular.woff2"), (700, "JetBrainsMono-Bold.woff2")):
+        path = FONTS / file
+        if path.exists():
+            b64 = base64.b64encode(path.read_bytes()).decode()
+            rules.append(
+                f"@font-face{{font-family:'JetBrains Mono';font-style:normal;font-weight:{weight};"
+                f"src:url(data:font/woff2;base64,{b64}) format('woff2');}}"
+            )
+    return "<style>" + "".join(rules) + "</style>" if rules else ""
+
+
+FONT_CSS = font_css()
+
+
+def canvas(style: str, body: str, width: int, height: int, fonts: bool = True) -> str:
     return (
         f'<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" fill="none" '
-        f'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n{style}\n{body}{"" if body.endswith(chr(10)) else chr(10)}</svg>\n'
+        f'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n'
+        f'{FONT_CSS if fonts else ""}{style}\n{body}{"" if body.endswith(chr(10)) else chr(10)}</svg>\n'
     )
 
 
@@ -667,7 +689,8 @@ def write_outputs(svg: str) -> None:
     for name, x0, w in (("header-avatar.svg", 0, 260), ("header-repos.svg", 260, 540)):
         write(name, (
             f'<svg width="{w}" height="260" viewBox="{x0} 0 {w} 260" fill="none" '
-            f'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n{style}\n{header}</svg>\n'
+            f'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n'
+            f'{FONT_CSS if x0 else ""}{style}\n{header}</svg>\n'
         ))
 
     # 2. social pills, one file each so the README can link them
@@ -706,13 +729,14 @@ TILE_STYLE = (
     "<style>.tile{opacity:0;animation:tile-in .6s cubic-bezier(.22,1,.36,1) forwards}"
     "@keyframes tile-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}</style>"
 )
+MONO = "'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace"
 
 
 def pct(w: float) -> str:
     return f"{w * 100 / CANVAS_W:.3f}%"
 
 
-def tile_svg(w: int, h: int, inner: str, top=False, bottom=False, left=False, right=False) -> str:
+def tile_svg(w: int, h: int, inner: str, top=False, bottom=False, left=False, right=False, fonts=False) -> str:
     edges = []
     if top:
         edges.append(f'<rect x="0" y="0" width="{w}" height="1" fill="{BORDER}"/>')
@@ -724,7 +748,7 @@ def tile_svg(w: int, h: int, inner: str, top=False, bottom=False, left=False, ri
         edges.append(f'<rect x="{w - 1}" y="0" width="1" height="{h}" fill="{BORDER}"/>')
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}">'
-        f'{TILE_STYLE}<rect width="{w}" height="{h}" fill="{BG}"/>{"".join(edges)}{inner}</svg>\n'
+        f'{FONT_CSS if fonts else ""}{TILE_STYLE}<rect width="{w}" height="{h}" fill="{BG}"/>{"".join(edges)}{inner}</svg>\n'
     )
 
 
@@ -751,11 +775,11 @@ def write_stack_tiles() -> list[list[dict]]:
 
             # card header: label on its own full-width tile (top border + sides)
             label = (
-                f'<text class="tile" x="24" y="32" fill="{LABEL}" font-family="Inter, \'Segoe UI\', sans-serif" '
-                f'font-size="11" font-weight="500" letter-spacing="2">{esc(card["label"])}</text>'
+                f'<text class="tile" x="24" y="32" fill="{LABEL}" font-family="{MONO}" '
+                f'font-size="13" font-weight="500" letter-spacing="2">{esc(card["label"])}</text>'
             )
             f = f"stack/{slug}.svg"
-            write(f, tile_svg(w, label_h, label, top=True, left=True, right=True))
+            write(f, tile_svg(w, label_h, label, top=True, left=True, right=True, fonts=True))
             header_line.append({"file": f, "w": w, "alt": card["label"]})
 
             # icon strip: same geometry as the original strip (left padded or centered)
@@ -774,6 +798,34 @@ def write_stack_tiles() -> list[list[dict]]:
     return lines
 
 
+def write_bands() -> str:
+    """Optional themed text sections from config['bands'] -> dist/band-<id>.svg + README html."""
+    html = []
+    template = BAND_TEMPLATE.read_text(encoding="utf-8") if BAND_TEMPLATE.exists() else ""
+    for band in CONFIG.get("bands", []):
+        lines = band.get("lines", [])
+        line_h = 22
+        height = 44 + line_h * len(lines) + (14 if lines else 0)
+        body = "".join(
+            f'<text class="anim-target" x="24" y="{58 + line_h * i}" font-size="13" fill="{esc(band.get("color", "#e5e5e5"))}" '
+            f'style="animation-delay: {450 + 90 * i}ms">{esc(line)}</text>'
+            for i, line in enumerate(lines)
+        )
+        svg = (
+            template.replace("{{FONT_CSS}}", FONT_CSS)
+            .replace("{{HEIGHT}}", str(height)).replace("{{INNER_H}}", str(height - 2))
+            .replace("{{TITLE}}", esc(band.get("title", "")))
+            .replace("{{RIGHT}}", esc(band.get("right", "")))
+            .replace("{{ACCENT}}", esc(band.get("accent", "#c5ff4a")))
+            .replace("{{BODY}}", body)
+        )
+        file = f"band-{band['id']}.svg"
+        write(file, svg)
+        img = f'<img src="./dist/{file}" alt="{esc(band.get("title", band["id"]))}" width="100%">'
+        html.append(f'<a href="{esc(band["url"])}">{img}</a>' if band.get("url") else img)
+    return "\n".join(html)
+
+
 def write_readme(lines: list[list[dict]]) -> None:
     html = []
     for line in lines:
@@ -784,6 +836,7 @@ def write_readme(lines: list[list[dict]]) -> None:
         html.append("<div>" + "".join(imgs) + "</div>")  # no whitespace between tiles -> no gaps
 
     readme = README_TEMPLATE.read_text(encoding="utf-8").replace("{{STACK}}", "\n".join(html))
+    readme = readme.replace("{{BANDS}}", write_bands())
     for key, url in CONFIG["links"].items():
         readme = readme.replace("{{LINK_" + key.upper() + "}}", esc(url))
     (ROOT / "README.md").write_text(readme, encoding="utf-8", newline="\n")

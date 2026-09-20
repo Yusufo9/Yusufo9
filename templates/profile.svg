@@ -185,31 +185,31 @@
       @keyframes metric-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
       @keyframes metric-glow { 0%, 100% { filter: drop-shadow(0 0 0px rgba(197,255,74,0)); } 50% { filter: drop-shadow(0 0 6px rgba(197,255,74,0.75)); } }
     </style>
-    <text x="24" y="32" font-family="Inter" font-size="11" font-weight="500" fill="#7a7a7a" letter-spacing="2">[ GITHUB METRICS ]</text>
+    <text x="24" y="32" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="13" font-weight="500" fill="#7a7a7a" letter-spacing="2">[ GITHUB METRICS ]</text>
     
         <g transform="translate(24, 48)">
-          <text class="metric" style="animation-delay: 0.1s, 1.1s" x="0" y="28" font-family="Inter" font-size="28" font-weight="300" fill="#c5ff4a">{{STARS}}</text>
-          <text x="0" y="44" font-family="Inter" font-size="10" font-weight="500" fill="#7a7a7a" letter-spacing="1.5">STARS</text>
+          <text class="metric" style="animation-delay: 0.1s, 1.1s" x="0" y="28" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="34" font-weight="700" fill="#c5ff4a">{{STARS}}</text>
+          <text x="0" y="44" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="12" font-weight="500" fill="#7a7a7a" letter-spacing="1.5">STARS</text>
         </g>
         <g transform="translate(149.33333333333331, 48)">
-          <text class="metric" style="animation-delay: 0.2s, 1.2s" x="0" y="28" font-family="Inter" font-size="28" font-weight="300" fill="#c5ff4a">{{REPOS}}</text>
-          <text x="0" y="44" font-family="Inter" font-size="10" font-weight="500" fill="#7a7a7a" letter-spacing="1.5">REPOS</text>
+          <text class="metric" style="animation-delay: 0.2s, 1.2s" x="0" y="28" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="34" font-weight="700" fill="#c5ff4a">{{REPOS}}</text>
+          <text x="0" y="44" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="12" font-weight="500" fill="#7a7a7a" letter-spacing="1.5">REPOS</text>
         </g>
         <g transform="translate(274.66666666666663, 48)">
-          <text class="metric" style="animation-delay: 0.3s, 1.3s" x="0" y="28" font-family="Inter" font-size="28" font-weight="300" fill="#c5ff4a">{{FOLLOWERS}}</text>
-          <text x="0" y="44" font-family="Inter" font-size="10" font-weight="500" fill="#7a7a7a" letter-spacing="1.5">FOLLOWERS</text>
+          <text class="metric" style="animation-delay: 0.3s, 1.3s" x="0" y="28" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="34" font-weight="700" fill="#c5ff4a">{{FOLLOWERS}}</text>
+          <text x="0" y="44" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="12" font-weight="500" fill="#7a7a7a" letter-spacing="1.5">FOLLOWERS</text>
         </g>
         <g transform="translate(400, 48)">
-          <text class="metric" style="animation-delay: 0.4s, 1.4s" x="0" y="28" font-family="Inter" font-size="28" font-weight="300" fill="#c5ff4a">{{FOLLOWING}}</text>
-          <text x="0" y="44" font-family="Inter" font-size="10" font-weight="500" fill="#7a7a7a" letter-spacing="1.5">FOLLOWING</text>
+          <text class="metric" style="animation-delay: 0.4s, 1.4s" x="0" y="28" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="34" font-weight="700" fill="#c5ff4a">{{FOLLOWING}}</text>
+          <text x="0" y="44" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="12" font-weight="500" fill="#7a7a7a" letter-spacing="1.5">FOLLOWING</text>
         </g>
         <g transform="translate(525.3333333333333, 48)">
-          <text class="metric" style="animation-delay: 0.5s, 1.5s" x="0" y="28" font-family="Inter" font-size="28" font-weight="300" fill="#c5ff4a">{{FORKS}}</text>
-          <text x="0" y="44" font-family="Inter" font-size="10" font-weight="500" fill="#7a7a7a" letter-spacing="1.5">FORKS</text>
+          <text class="metric" style="animation-delay: 0.5s, 1.5s" x="0" y="28" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="34" font-weight="700" fill="#c5ff4a">{{FORKS}}</text>
+          <text x="0" y="44" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="12" font-weight="500" fill="#7a7a7a" letter-spacing="1.5">FORKS</text>
         </g>
         <g transform="translate(650.6666666666666, 48)">
-          <text class="metric" style="animation-delay: 0.6s, 1.6s" x="0" y="28" font-family="Inter" font-size="28" font-weight="300" fill="#c5ff4a">{{GISTS}}</text>
-          <text x="0" y="44" font-family="Inter" font-size="10" font-weight="500" fill="#7a7a7a" letter-spacing="1.5">GISTS</text>
+          <text class="metric" style="animation-delay: 0.6s, 1.6s" x="0" y="28" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="34" font-weight="700" fill="#c5ff4a">{{GISTS}}</text>
+          <text x="0" y="44" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="12" font-weight="500" fill="#7a7a7a" letter-spacing="1.5">GISTS</text>
         </g>
   
   
@@ -299,12 +299,12 @@
       <rect class="" x="0" y="0" width="408" height="210" fill="#060606" stroke="#252525" stroke-width="1" rx="0" />
       
       
-    <text x="24" y="32" font-family="Inter" font-size="11" font-weight="500" fill="#7a7a7a" letter-spacing="2">[ GITHUB STREAK STATS ]</text>
+    <text x="24" y="32" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="13" font-weight="500" fill="#7a7a7a" letter-spacing="2">[ GITHUB STREAK STATS ]</text>
     <style>
 @keyframes currstreak {
                 0% { font-size: 3px; opacity: 0.2; }
-                80% { font-size: 34px; opacity: 1; }
-                100% { font-size: 28px; opacity: 1; }
+                80% { font-size: 40px; opacity: 1; }
+                100% { font-size: 34px; opacity: 1; }
             }
             @keyframes flicker { from { transform: scale(1) } to { transform: scale(1.12, 1.06) } }
             @keyframes fadein {
@@ -335,32 +335,32 @@
             <g style='isolation: isolate'>
                 <!-- Total Contributions big number -->
                 <g transform='translate(82.5, 48)'>
-                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#FEFEFE' stroke='none' font-family='"Segoe UI", Ubuntu, sans-serif' font-weight='700' font-size='28px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 0.6s'>{{TOTAL_CONTRIBUTIONS}}</text>
+                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#FEFEFE' stroke='none' font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-weight='700' font-size='34px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 0.6s'>{{TOTAL_CONTRIBUTIONS}}</text>
                 </g>
 
                 <!-- Total Contributions label -->
                 <g transform='translate(82.5, 84)'>
-                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#FEFEFE' stroke='none' font-family='"Segoe UI", Ubuntu, sans-serif' font-weight='400' font-size='14px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 0.7s'>
+                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#FEFEFE' stroke='none' font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-weight='400' font-size='16px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 0.7s'>
                         Total Contributions
                     </text>
                 </g>
 
                 <!-- Total Contributions range -->
                 <g transform='translate(82.5, 114)'>
-                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#9E9E9E' stroke='none' font-family='"Segoe UI", Ubuntu, sans-serif' font-weight='400' font-size='12px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 0.8s'>{{CONTRIB_RANGE}}</text>
+                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#9E9E9E' stroke='none' font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-weight='400' font-size='13px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 0.8s'>{{CONTRIB_RANGE}}</text>
                 </g>
             </g>
             <g style='isolation: isolate'>
                 <!-- Current Streak label -->
                 <g transform='translate(247.5, 108)'>
-                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#FB8C00' stroke='none' font-family='"Segoe UI", Ubuntu, sans-serif' font-weight='700' font-size='14px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 0.9s'>
+                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#FB8C00' stroke='none' font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-weight='700' font-size='16px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 0.9s'>
                         Current Streak
                     </text>
                 </g>
 
                 <!-- Current Streak range -->
                 <g transform='translate(247.5, 145)'>
-                    <text x='0' y='21' stroke-width='0' text-anchor='middle' fill='#9E9E9E' stroke='none' font-family='"Segoe UI", Ubuntu, sans-serif' font-weight='400' font-size='12px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 0.9s'>{{CURRENT_STREAK_RANGE}}</text>
+                    <text x='0' y='21' stroke-width='0' text-anchor='middle' fill='#9E9E9E' stroke='none' font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-weight='400' font-size='13px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 0.9s'>{{CURRENT_STREAK_RANGE}}</text>
                 </g>
 
                 <!-- Ring around number -->
@@ -375,26 +375,26 @@
 
                 <!-- Current Streak big number -->
                 <g transform='translate(247.5, 48)'>
-                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#FEFEFE' stroke='none' font-family='"Segoe UI", Ubuntu, sans-serif' font-weight='700' font-size='28px' font-style='normal' style='animation: currstreak 0.6s linear forwards'>{{CURRENT_STREAK}}</text>
+                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#FEFEFE' stroke='none' font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-weight='700' font-size='34px' font-style='normal' style='animation: currstreak 0.6s linear forwards'>{{CURRENT_STREAK}}</text>
                 </g>
 
             </g>
             <g style='isolation: isolate'>
                 <!-- Longest Streak big number -->
                 <g transform='translate(412.5, 48)'>
-                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#FEFEFE' stroke='none' font-family='"Segoe UI", Ubuntu, sans-serif' font-weight='700' font-size='28px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 1.2s'>{{LONGEST_STREAK}}</text>
+                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#FEFEFE' stroke='none' font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-weight='700' font-size='34px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 1.2s'>{{LONGEST_STREAK}}</text>
                 </g>
 
                 <!-- Longest Streak label -->
                 <g transform='translate(412.5, 84)'>
-                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#FEFEFE' stroke='none' font-family='"Segoe UI", Ubuntu, sans-serif' font-weight='400' font-size='14px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 1.3s'>
+                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#FEFEFE' stroke='none' font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-weight='400' font-size='16px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 1.3s'>
                         Longest Streak
                     </text>
                 </g>
 
                 <!-- Longest Streak range -->
                 <g transform='translate(412.5, 114)'>
-                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#9E9E9E' stroke='none' font-family='"Segoe UI", Ubuntu, sans-serif' font-weight='400' font-size='12px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 1.4s'>{{LONGEST_STREAK_RANGE}}</text>
+                    <text x='0' y='32' stroke-width='0' text-anchor='middle' fill='#9E9E9E' stroke='none' font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-weight='400' font-size='13px' font-style='normal' style='opacity: 0; animation: fadein 0.5s linear forwards 1.4s'>{{LONGEST_STREAK_RANGE}}</text>
                 </g>
             </g>
             
@@ -724,7 +724,7 @@
         </g>
 
         <!-- Repositories label -->
-        <text class="anim-target" x="262" y="34" text-anchor="middle" fill="rgba(255,255,255,0.38)" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="500" letter-spacing="4" style="animation-delay: 209ms; transform-origin: center;">📦 REPOSITORIES</text>
+        <text class="anim-target" x="262" y="34" text-anchor="middle" fill="rgba(255,255,255,0.38)" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="12" font-weight="500" letter-spacing="4" style="animation-delay: 209ms; transform-origin: center;">📦 REPOSITORIES</text>
 
         <!-- Repositories carousel: cards scroll up continuously, list is duplicated for a seamless loop -->
         <defs>
@@ -738,7 +738,7 @@
           <style>
             .repo-track { animation: repo-scroll {{REPO_SCROLL_SECONDS}}s linear 1.2s infinite; }
             @keyframes repo-scroll { from { transform: translateY(0); } to { transform: translateY(-{{REPO_TRACK_HEIGHT}}px); } }
-            .repo-card text { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+            .repo-card text { font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; }
           </style>
         </defs>
         <g clip-path="url(#cw-repo-clip)">
@@ -818,7 +818,7 @@
       
       
       
-    <svg xmlns="http://www.w3.org/2000/svg" id="widget_1789912949759" width="800" height="40" viewBox="0 0 800 40" preserveAspectRatio="xMidYMid meet" font-family="'Departure Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">
+    <svg xmlns="http://www.w3.org/2000/svg" id="widget_1789912949759" width="800" height="40" viewBox="0 0 800 40" preserveAspectRatio="xMidYMid meet" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace">
       
     <defs>
       <pattern id="scan-widget_1789912949759" width="4" height="4" patternUnits="userSpaceOnUse">
@@ -870,7 +870,7 @@
   
       <style>
         
-    #widget_1789912949759 text, #widget_1789912949759 tspan { font-family: 'Departure Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre; }
+    #widget_1789912949759 text, #widget_1789912949759 tspan { font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; white-space: pre; }
     #widget_1789912949759 .led { animation: blink-widget_1789912949759 1.1s steps(1,end) infinite; }
     @keyframes blink-widget_1789912949759 { 0%,55%{opacity:1} 56%,100%{opacity:.12} }
   
@@ -881,7 +881,7 @@
       <rect class="anim-target" width="800" height="40" fill="url(#amb1-widget_1789912949759)" style="animation-delay: 150ms; transform-origin: center;" />
       <rect class="anim-target" width="800" height="40" fill="url(#amb2-widget_1789912949759)" style="animation-delay: 225ms; transform-origin: center;" />
     
-      <rect class="anim-target" x="1" y="1" width="798" height="38" fill="rgba(197,255,74,0.05)" stroke="rgba(197,255,74,0.3)" style="animation-delay: 300ms; transform-origin: center;" /><rect x="16" y="16" width="8" height="8" fill="#ff5555" class="led anim-target" filter="url(#glow-widget_1789912949759)" style="animation-delay: 375ms; transform-origin: center;" /><text class="anim-target" x="30" y="24" font-size="10" letter-spacing="1.6" fill="#c5ff4a" style="animation-delay: 450ms; transform-origin: center;">ABOUT // DOSSIER</text><text class="anim-target" x="786" y="24" font-size="10" letter-spacing="1.6" text-anchor="end" fill="#8a8a8a" style="animation-delay: 525ms; transform-origin: center;">HELLO WORLD!</text>
+      <rect class="anim-target" x="1" y="1" width="798" height="38" fill="rgba(197,255,74,0.05)" stroke="rgba(197,255,74,0.3)" style="animation-delay: 300ms; transform-origin: center;" /><rect x="16" y="16" width="8" height="8" fill="#ff5555" class="led anim-target" filter="url(#glow-widget_1789912949759)" style="animation-delay: 375ms; transform-origin: center;" /><text class="anim-target" x="30" y="24" font-size="12" letter-spacing="1.6" fill="#c5ff4a" style="animation-delay: 450ms; transform-origin: center;">ABOUT // DOSSIER</text><text class="anim-target" x="786" y="24" font-size="12" letter-spacing="1.6" text-anchor="end" fill="#8a8a8a" style="animation-delay: 525ms; transform-origin: center;">HELLO WORLD!</text>
     </svg>
   
   
@@ -956,12 +956,12 @@
       <defs>
         <style>
           #widget_1789913170112 .mc-font {
-            font-family: 'Minecraft', 'Courier New', monospace, sans-serif;
+            font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
             font-smooth: never;
             -webkit-font-smoothing: none;
           }
-          #widget_1789913170112 .chat-line { font-size: 11px; }
-          #widget_1789913170112 .prompt-text { fill: #ffffff; font-size: 11.5px; }
+          #widget_1789913170112 .chat-line { font-size: 13px; }
+          #widget_1789913170112 .prompt-text { fill: #ffffff; font-size: 13px; }
           #widget_1789913170112 .mc-cursor { animation: mc-blink 1s steps(2, start) infinite; }
           @keyframes mc-blink { to { visibility: hidden; } }
           #widget_1789913170112 .mc-line { opacity: 0; animation: mc-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
@@ -1088,8 +1088,8 @@
   <style>
     
     #widget_1789914565756 text {
-      font-family: 'JetBrains Mono', 'Courier New', Consolas, monospace;
-      font-size: 12px;
+      font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+      font-size: 14px;
       fill: #e5e5e5;
       white-space: pre;
     }
@@ -1134,5 +1134,5 @@
   
     </g>
   
-  <text x="792" y="1372" text-anchor="end" font-family="Inter, 'Segoe UI', sans-serif" font-size="9" fill="#3a3a3a" letter-spacing="1">last sync {{UPDATED_AT}}</text>
+  <text x="792" y="1372" text-anchor="end" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="10" fill="#3a3a3a" letter-spacing="1">last sync {{UPDATED_AT}}</text>
 </svg>

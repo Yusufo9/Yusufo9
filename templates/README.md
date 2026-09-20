@@ -7,7 +7,7 @@
   <a href="{{LINK_GMAIL}}"><img src="./dist/pill-gmail.svg" alt="Gmail" height="48"></a>
   <a href="{{LINK_TELEGRAM}}"><img src="./dist/pill-telegram.svg" alt="Telegram" height="48"></a>
 </p>
-
+{{BANDS}}
 <img src="./dist/body-top.svg" alt="About // Dossier - My Dev Tech Stack" width="100%">
 {{STACK}}
 <img src="./dist/body-bottom.svg" alt="GitHub metrics, streak, DNA and activity" width="100%">

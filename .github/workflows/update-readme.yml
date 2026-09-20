@@ -2,7 +2,7 @@ name: Update README SVGs
 
 on:
   schedule:
-    - cron: "0 * * * *"   # every hour
+    - cron: "23 * * * *"  # hourly, off the congested :00 slot (GitHub often skips/delays those)
   push:
     branches: [main]
     paths-ignore:
