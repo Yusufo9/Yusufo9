@@ -759,42 +759,41 @@ def icon_markup(name: str, x: int, y: int, size: int) -> str:
 
 
 def write_stack_tiles() -> list[list[dict]]:
-    """Emit dist/stack/*.svg; return README rows: [[{file,w,url?,alt}, ...], ...]."""
+    """Emit dist/stack/*.svg; return README rows: [[{file,w,url,alt}, ...], ...].
+
+    Every tile is full card height and paints the card label at its absolute
+    position (clipped by the tile), so a card is ONE row of adjacent images:
+    no header row to misalign, no seam between label and icons.
+    """
     (DIST / "stack").mkdir(parents=True, exist_ok=True)
     label_h = 44
     lines: list[list[dict]] = []
 
     for row in CONFIG["stack"]:
-        header_line: list[dict] = []
-        icon_line: list[dict] = []
+        line: list[dict] = []
         for card in row:
             slug = re.sub(r"[^a-z0-9]+", "-", card["label"].lower()).strip("-")
-            w, icon, pitch = card["width"], card["icon"], card["pitch"]
-            body_h = card["height"] - label_h
+            w, h, icon, pitch = card["width"], card["height"], card["icon"], card["pitch"]
             items = card["items"]
-
-            # card header: label on its own full-width tile (top border + sides)
-            label = (
-                f'<text class="tile" x="24" y="32" fill="{LABEL}" font-family="{MONO}" '
-                f'font-size="13" font-weight="500" letter-spacing="2">{esc(card["label"])}</text>'
-            )
-            f = f"stack/{slug}.svg"
-            write(f, tile_svg(w, label_h, label, top=True, left=True, right=True, fonts=True))
-            header_line.append({"file": f, "w": w, "alt": card["label"]})
-
-            # icon strip: same geometry as the original strip (left padded or centered)
             strip_w = (len(items) - 1) * pitch + icon
             pad_l = (w - strip_w) // 2 if card.get("align") == "center" else 24
             pad_r = w - pad_l - strip_w
+
+            offset = 0  # x of this tile inside the card
             for i, item in enumerate(items):
                 first, last = i == 0, i == len(items) - 1
-                tw = icon + (pitch - icon) + (pad_l if first else 0) + (pad_r - (pitch - icon) if last else 0)
+                tw = pitch + (pad_l if first else 0) + (pad_r - (pitch - icon) if last else 0)
                 x = pad_l if first else 0
-                inner = f'<g class="tile" style="animation-delay:{120 + 70 * i}ms">{icon_markup(item["icon"], x, 0, icon)}</g>'
+                label = (
+                    f'<text class="tile" x="{24 - offset}" y="32" fill="{LABEL}" font-family="{MONO}" '
+                    f'font-size="13" font-weight="500" letter-spacing="2">{esc(card["label"])}</text>'
+                )
+                inner = label + f'<g class="tile" style="animation-delay:{120 + 70 * i}ms">{icon_markup(item["icon"], x, label_h, icon)}</g>'
                 f = f"stack/{slug}-{item['icon']}.svg"
-                write(f, tile_svg(tw, body_h, inner, bottom=True, left=first, right=last))
-                icon_line.append({"file": f, "w": tw, "url": item["url"], "alt": item.get("name", item["icon"])})
-        lines += [header_line, icon_line]
+                write(f, tile_svg(tw, h, inner, top=True, bottom=True, left=first, right=last, fonts=True))
+                line.append({"file": f, "w": tw, "url": item["url"], "alt": item.get("name", item["icon"])})
+                offset += tw
+        lines.append(line)
     return lines
 
 

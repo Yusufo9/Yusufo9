@@ -296,7 +296,7 @@
 
       
       
-      <rect class="" x="0" y="0" width="408" height="210" fill="#060606" stroke="#252525" stroke-width="1" rx="0" />
+      <rect class="" x="0" y="0" width="416" height="210" fill="#060606" stroke="#252525" stroke-width="1" rx="0" />
       
       
     <text x="24" y="32" font-family="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace" font-size="13" font-weight="500" fill="#7a7a7a" letter-spacing="2">[ GITHUB STREAK STATS ]</text>
@@ -312,7 +312,7 @@
                 100% { opacity: 1; }
             }
 </style>
-<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' style='isolation: isolate' direction='ltr' x="16" y="44" width="376" height="150" preserveAspectRatio="xMinYMin meet" viewBox="0 0 495 195">
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' style='isolation: isolate' direction='ltr' x="20" y="44" width="376" height="150" preserveAspectRatio="xMinYMin meet" viewBox="0 0 495 195">
         
         <defs>
             <clipPath id='outer_rectangle'>
