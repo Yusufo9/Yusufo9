@@ -35,7 +35,7 @@
     ],
     [
       {
-        "label": "Web Stack", "width": 800, "height": 109, "icon": 48, "pitch": 56, "align": "center",
+        "label": "WEB STACK", "width": 800, "height": 109, "icon": 48, "pitch": 56, "align": "center",
         "items": [
           { "icon": "javascript", "name": "JavaScript",   "url": "https://developer.mozilla.org/docs/Web/JavaScript" },
           { "icon": "typescript", "name": "TypeScript",   "url": "https://www.typescriptlang.org/" },
