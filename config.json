@@ -1,16 +1,3 @@
 {
-  "username": "Yusufo9",
-  "display_name": "Yusuf",
-  "tagline": "DevOps // Backend // Problem Solver",
-  "links": {
-    "yusuf": "https://github.com/Yusufo9",
-    "chaotic_yusuf": "https://x.com/chaotic_yusuf",
-    "gmail": "mailto:yusufyigitayan516@gmail.com"
-  },
-  "core_stack": ["TypeScript", "Python", "Docker", "Linux", "Node.js"],
-  "stack": {
-    "devops_backend": ["Docker", "Linux", "Node.js", "Python", "PostgreSQL", "Git"],
-    "problem_solving": ["C++", "Algorithms", "Data Structures", "LeetCode"],
-    "web_stack": ["TypeScript", "React", "Next.js", "Tailwind", "HTML / CSS"]
-  }
+  "username": "Yusufo9"
 }
