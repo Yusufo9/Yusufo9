@@ -662,8 +662,13 @@ def write_outputs(svg: str) -> None:
     style, widgets, footer = split_widgets(svg)
     by_id = {w[2]: w for w in widgets}
 
-    # 1. header card (avatar + repositories)
-    write("header.svg", canvas(style, by_id[HEADER_WIDGET][3], 800, 260))
+    # 1. header, split in two so each half can be a link (profile / repositories tab)
+    header = by_id[HEADER_WIDGET][3]
+    for name, x0, w in (("header-avatar.svg", 0, 260), ("header-repos.svg", 260, 540)):
+        write(name, (
+            f'<svg width="{w}" height="260" viewBox="{x0} 0 {w} 260" fill="none" '
+            f'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n{style}\n{header}</svg>\n'
+        ))
 
     # 2. social pills, one file each so the README can link them
     pills_svg = by_id[PILLS_WIDGET][3]
@@ -679,23 +684,23 @@ def write_outputs(svg: str) -> None:
         write(f"pill-{name}.svg", pill)
 
     # 3. body, split around the tech stack so the stack can be real links
-    def band(name: str, top: int, bottom: int) -> None:
-        part = "".join(shift(w[3], top) for w in widgets if top <= w[1] < bottom and w[2] not in STACK_WIDGETS | {HEADER_WIDGET, PILLS_WIDGET})
-        write(name, canvas(style, part, 800, bottom - top))
-
-    band("body-top.svg", *BODY_TOP)
+    skip = STACK_WIDGETS | {HEADER_WIDGET, PILLS_WIDGET}
+    top = "".join(shift(w[3], BODY_TOP[0]) for w in widgets if BODY_TOP[0] <= w[1] < BODY_TOP[1] and w[2] not in skip)
+    write("body-top.svg", canvas(style, top, 800, BODY_TOP[1] - BODY_TOP[0]))
     body_footer = re.sub(r'y="(\d+)"', lambda m: f'y="{int(m.group(1)) - BODY_BOTTOM[0]}"', footer, count=1)
-    part = "".join(shift(w[3], BODY_BOTTOM[0]) for w in widgets if w[1] >= BODY_BOTTOM[0])
-    write("body-bottom.svg", canvas(style, part + body_footer, 800, BODY_BOTTOM[1] - BODY_BOTTOM[0]))
+    bottom = "".join(shift(w[3], BODY_BOTTOM[0]) for w in widgets if w[1] >= BODY_BOTTOM[0])
+    write("body-bottom.svg", canvas(style, bottom + body_footer, 800, BODY_BOTTOM[1] - BODY_BOTTOM[0]))
 
     # 4. tech stack tiles + README
     write_readme(write_stack_tiles())
 
 
 # --------------------------------------------------------------------------- #
-# Tech stack: one black tile per icon so every icon can be an <a> in the README
+# Tech stack: the original cards are rebuilt from small tiles so every icon can
+# be an <a> in the README. Tile widths are percentages of the 800px canvas, so
+# the rows scale exactly like the SVG bands above and below (mobile included).
 # --------------------------------------------------------------------------- #
-TILE = 64
+CANVAS_W = 800
 BG, BORDER, LABEL = "#060606", "#252525", "#7a7a7a"
 TILE_STYLE = (
     "<style>.tile{opacity:0;animation:tile-in .6s cubic-bezier(.22,1,.36,1) forwards}"
@@ -703,65 +708,83 @@ TILE_STYLE = (
 )
 
 
-def tile_svg(width: int, inner: str, first: bool, last: bool) -> str:
-    edges = [f'<rect x="0" y="0.5" width="{width}" height="1" fill="{BORDER}"/>',
-             f'<rect x="0" y="{TILE - 1.5}" width="{width}" height="1" fill="{BORDER}"/>']
-    if first:
-        edges.append(f'<rect x="0.5" y="0" width="1" height="{TILE}" fill="{BORDER}"/>')
-    if last:
-        edges.append(f'<rect x="{width - 1.5}" y="0" width="1" height="{TILE}" fill="{BORDER}"/>')
+def pct(w: float) -> str:
+    return f"{w * 100 / CANVAS_W:.3f}%"
+
+
+def tile_svg(w: int, h: int, inner: str, top=False, bottom=False, left=False, right=False) -> str:
+    edges = []
+    if top:
+        edges.append(f'<rect x="0" y="0" width="{w}" height="1" fill="{BORDER}"/>')
+    if bottom:
+        edges.append(f'<rect x="0" y="{h - 1}" width="{w}" height="1" fill="{BORDER}"/>')
+    if left:
+        edges.append(f'<rect x="0" y="0" width="1" height="{h}" fill="{BORDER}"/>')
+    if right:
+        edges.append(f'<rect x="{w - 1}" y="0" width="1" height="{h}" fill="{BORDER}"/>')
     return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{TILE}" viewBox="0 0 {width} {TILE}">'
-        f'{TILE_STYLE}<rect width="{width}" height="{TILE}" fill="{BG}"/>{"".join(edges)}{inner}</svg>\n'
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}">'
+        f'{TILE_STYLE}<rect width="{w}" height="{h}" fill="{BG}"/>{"".join(edges)}{inner}</svg>\n'
     )
 
 
-def icon_markup(name: str) -> str:
+def icon_markup(name: str, x: int, y: int, size: int) -> str:
     src = (ICONS / f"{name}.svg").read_text(encoding="utf-8")
     body = re.search(r"<svg[^>]*>(.*)</svg>", src, re.S).group(1)
-    size = 44
-    off = (TILE - size) // 2
-    return f'<svg x="{off}" y="{off}" width="{size}" height="{size}" viewBox="0 0 256 256" fill="none">{body}</svg>'
+    return f'<svg x="{x}" y="{y}" width="{size}" height="{size}" viewBox="0 0 256 256" fill="none">{body}</svg>'
 
 
-def write_stack_tiles() -> list[dict]:
-    """Emit dist/stack/*.svg and return rows with the paths the README needs."""
+def write_stack_tiles() -> list[list[dict]]:
+    """Emit dist/stack/*.svg; return README rows: [[{file,w,url?,alt}, ...], ...]."""
     (DIST / "stack").mkdir(parents=True, exist_ok=True)
-    rows = []
+    label_h = 44
+    lines: list[list[dict]] = []
+
     for row in CONFIG["stack"]:
-        slug = re.sub(r"[^a-z0-9]+", "-", row["label"].lower()).strip("-")
-        label_w = 24 + round(len(row["label"]) * 7.4) + 20
-        label = (
-            f'<text class="tile" x="24" y="{TILE / 2 + 4}" fill="{LABEL}" font-family="Inter, \'Segoe UI\', sans-serif" '
-            f'font-size="11" font-weight="500" letter-spacing="2">{esc(row["label"])}</text>'
-        )
-        label_file = f"stack/label-{slug}.svg"
-        write(label_file, tile_svg(label_w, label, first=True, last=False))
-        tiles = []
-        for i, item in enumerate(row["items"]):
-            inner = f'<g class="tile" style="animation-delay:{120 + 70 * i}ms">{icon_markup(item["icon"])}</g>'
-            file = f"stack/{slug}-{item['icon']}.svg"
-            write(file, tile_svg(TILE, inner, first=False, last=i == len(row["items"]) - 1))
-            tiles.append({"file": file, "url": item["url"], "alt": item.get("name", item["icon"])})
-        rows.append({"label": row["label"], "label_file": label_file, "tiles": tiles})
-    return rows
+        header_line: list[dict] = []
+        icon_line: list[dict] = []
+        for card in row:
+            slug = re.sub(r"[^a-z0-9]+", "-", card["label"].lower()).strip("-")
+            w, icon, pitch = card["width"], card["icon"], card["pitch"]
+            body_h = card["height"] - label_h
+            items = card["items"]
+
+            # card header: label on its own full-width tile (top border + sides)
+            label = (
+                f'<text class="tile" x="24" y="32" fill="{LABEL}" font-family="Inter, \'Segoe UI\', sans-serif" '
+                f'font-size="11" font-weight="500" letter-spacing="2">{esc(card["label"])}</text>'
+            )
+            f = f"stack/{slug}.svg"
+            write(f, tile_svg(w, label_h, label, top=True, left=True, right=True))
+            header_line.append({"file": f, "w": w, "alt": card["label"]})
+
+            # icon strip: same geometry as the original strip (left padded or centered)
+            strip_w = (len(items) - 1) * pitch + icon
+            pad_l = (w - strip_w) // 2 if card.get("align") == "center" else 24
+            pad_r = w - pad_l - strip_w
+            for i, item in enumerate(items):
+                first, last = i == 0, i == len(items) - 1
+                tw = icon + (pitch - icon) + (pad_l if first else 0) + (pad_r - (pitch - icon) if last else 0)
+                x = pad_l if first else 0
+                inner = f'<g class="tile" style="animation-delay:{120 + 70 * i}ms">{icon_markup(item["icon"], x, 0, icon)}</g>'
+                f = f"stack/{slug}-{item['icon']}.svg"
+                write(f, tile_svg(tw, body_h, inner, bottom=True, left=first, right=last))
+                icon_line.append({"file": f, "w": tw, "url": item["url"], "alt": item.get("name", item["icon"])})
+        lines += [header_line, icon_line]
+    return lines
 
 
-def write_readme(rows: list[dict]) -> None:
-    lines = []
-    for row in rows:
-        imgs = [f'<img src="./dist/{row["label_file"]}" alt="{esc(row["label"])}" height="{TILE}">']
-        imgs += [
-            f'<a href="{esc(t["url"])}"><img src="./dist/{t["file"]}" alt="{esc(t["alt"])}" title="{esc(t["alt"])}" height="{TILE}"></a>'
-            for t in row["tiles"]
-        ]
-        lines.append("<div>" + "".join(imgs) + "</div>")  # no whitespace between tiles -> no gaps
-    stack_html = "\n".join(lines)
+def write_readme(lines: list[list[dict]]) -> None:
+    html = []
+    for line in lines:
+        imgs = []
+        for t in line:
+            img = f'<img src="./dist/{t["file"]}" alt="{esc(t["alt"])}" title="{esc(t["alt"])}" width="{pct(t["w"])}" align="top">'
+            imgs.append(f'<a href="{esc(t["url"])}">{img}</a>' if t.get("url") else img)
+        html.append("<div>" + "".join(imgs) + "</div>")  # no whitespace between tiles -> no gaps
 
-    links = CONFIG["links"]
-    readme = README_TEMPLATE.read_text(encoding="utf-8")
-    readme = readme.replace("{{STACK}}", stack_html)
-    for key, url in links.items():
+    readme = README_TEMPLATE.read_text(encoding="utf-8").replace("{{STACK}}", "\n".join(html))
+    for key, url in CONFIG["links"].items():
         readme = readme.replace("{{LINK_" + key.upper() + "}}", esc(url))
     (ROOT / "README.md").write_text(readme, encoding="utf-8", newline="\n")
     print("  wrote README.md")
