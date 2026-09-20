@@ -721,7 +721,7 @@ def icon_markup(name: str) -> str:
     body = re.search(r"<svg[^>]*>(.*)</svg>", src, re.S).group(1)
     size = 44
     off = (TILE - size) // 2
-    return f'<svg x="{off}" y="{off}" width="{size}" height="{size}" viewBox="0 0 256 256">{body}</svg>'
+    return f'<svg x="{off}" y="{off}" width="{size}" height="{size}" viewBox="0 0 256 256" fill="none">{body}</svg>'
 
 
 def write_stack_tiles() -> list[dict]:
