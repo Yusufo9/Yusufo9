@@ -494,26 +494,26 @@ def render_dna(dna: list[tuple[str, int]]) -> str:
     for k in range(16):
         t = k / 15
         p = 1 - (1 - t) ** 2  # ease-out, like the original reveal
-        # 40 columns: │ + 2 + label 12 + bar 12 + 1 + pct 4 + 7 + │
+        # 44 columns: │ + 2 + label 12 + bar 14 + 1 + pct 4 + 9 + │
         rows = []
         for label, pct in dna:
             v = round(pct * p)
-            filled = round(v * 12 / 100)
+            filled = round(v * 14 / 100)
             rows.append(
                 f'<tspan fill="{border}">│</tspan>  <tspan fill="{text}">{label:<12}</tspan>'
-                f'<tspan fill="{amber}">{"█" * filled}</tspan><tspan fill="{dim}">{" " * (12 - filled)}</tspan> '
-                f'<tspan fill="{red}" font-weight="bold">{v:>3}%</tspan>{" " * 7}<tspan fill="{border}">│</tspan>'
+                f'<tspan fill="{amber}">{"█" * filled}</tspan><tspan fill="{dim}">{" " * (14 - filled)}</tspan> '
+                f'<tspan fill="{red}" font-weight="bold">{v:>3}%</tspan>{" " * 9}<tspan fill="{border}">│</tspan>'
             )
-        hr = f'<tspan fill="{border}">│</tspan>  <tspan fill="{border}">{"─" * 36}</tspan><tspan fill="{border}">│</tspan>'
+        hr = f'<tspan fill="{border}">│</tspan>  <tspan fill="{border}">{"─" * 40}</tspan><tspan fill="{border}">│</tspan>'
         body = [
-            f'<tspan fill="{border}">┌{"─" * 38}┐</tspan>',
-            f'<tspan fill="{border}">│</tspan>{" " * 18}<tspan fill="{amber}" font-weight="bold">DNA</tspan>{" " * 17}<tspan fill="{border}">│</tspan>',
+            f'<tspan fill="{border}">┌{"─" * 42}┐</tspan>',
+            f'<tspan fill="{border}">│</tspan>{" " * 20}<tspan fill="{amber}" font-weight="bold">DNA</tspan>{" " * 19}<tspan fill="{border}">│</tspan>',
             hr,
             *rows,
             hr,
-            f'<tspan fill="{border}">│</tspan>  <tspan fill="{gold}" font-weight="bold">PRIMARY ARCHETYPE</tspan>{" " * 19}<tspan fill="{border}">│</tspan>',
-            f'<tspan fill="{border}">│</tspan>  <tspan fill="{amber}" font-weight="bold">&gt; THE {primary}</tspan>{" " * (30 - len(primary))}<tspan fill="{border}">│</tspan>',
-            f'<tspan fill="{border}">└{"─" * 38}┘</tspan>',
+            f'<tspan fill="{border}">│</tspan>  <tspan fill="{gold}" font-weight="bold">PRIMARY ARCHETYPE</tspan>{" " * 23}<tspan fill="{border}">│</tspan>',
+            f'<tspan fill="{border}">│</tspan>  <tspan fill="{amber}" font-weight="bold">&gt; THE {primary}</tspan>{" " * (34 - len(primary))}<tspan fill="{border}">│</tspan>',
+            f'<tspan fill="{border}">└{"─" * 42}┘</tspan>',
         ]
         frames.append(
             f'<g class="frame-{k}">'
