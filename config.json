@@ -6,5 +6,43 @@
     "gmail": "mailto:yusufyigitayan516@gmail.com",
     "telegram": "https://t.me/yyarom",
     "telegram_handle": "@yyaynn12"
-  }
+  },
+  "stack": [
+    {
+      "label": "DEVOPS // BACKEND",
+      "items": [
+        { "icon": "linux",   "name": "Linux",   "url": "https://www.linux.org/" },
+        { "icon": "docker",  "name": "Docker",  "url": "https://hub.docker.com/" },
+        { "icon": "git",     "name": "Git",     "url": "https://git-scm.com/" },
+        { "icon": "github",  "name": "GitHub",  "url": "https://github.com/" },
+        { "icon": "nodejs",  "name": "Node.js", "url": "https://nodejs.org/" },
+        { "icon": "mongodb", "name": "MongoDB", "url": "https://www.mongodb.com/" },
+        { "icon": "nginx",   "name": "Nginx",   "url": "https://nginx.org/" },
+        { "icon": "mariadb", "name": "MariaDB", "url": "https://mariadb.org/" }
+      ]
+    },
+    {
+      "label": "PROBLEM SOLVING",
+      "items": [
+        { "icon": "cpp",    "name": "C++",    "url": "https://isocpp.org/" },
+        { "icon": "python", "name": "Python", "url": "https://www.python.org/" },
+        { "icon": "java",   "name": "Java",   "url": "https://www.java.com/" },
+        { "icon": "lua",    "name": "Lua",    "url": "https://www.lua.org/" }
+      ]
+    },
+    {
+      "label": "WEB STACK",
+      "items": [
+        { "icon": "javascript", "name": "JavaScript", "url": "https://developer.mozilla.org/docs/Web/JavaScript" },
+        { "icon": "typescript", "name": "TypeScript", "url": "https://www.typescriptlang.org/" },
+        { "icon": "react",      "name": "React",      "url": "https://react.dev/" },
+        { "icon": "nextjs",     "name": "Next.js",    "url": "https://nextjs.org/" },
+        { "icon": "nodejs",     "name": "Node.js",    "url": "https://nodejs.org/" },
+        { "icon": "tailwind",   "name": "Tailwind CSS", "url": "https://tailwindcss.com/" },
+        { "icon": "html",       "name": "HTML5",      "url": "https://developer.mozilla.org/docs/Web/HTML" },
+        { "icon": "css",        "name": "CSS3",       "url": "https://developer.mozilla.org/docs/Web/CSS" },
+        { "icon": "vue",        "name": "Vue.js",     "url": "https://vuejs.org/" }
+      ]
+    }
+  ]
 }

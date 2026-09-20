@@ -39,9 +39,13 @@ TEMPLATE = ROOT / "templates" / "profile.svg"
 DIST = ROOT / "dist"
 
 # widget ids inside templates/profile.svg (GitAscii layout, y = translate offset)
-HEADER_WIDGET = "widget_1789911876234"   # avatar + core stack (y 0..260)
+HEADER_WIDGET = "widget_1789911876234"   # avatar + repositories (y 0..260)
 PILLS_WIDGET = "widget_1789912840027"    # social pills (y 268..312) - rendered as separate clickable images
-BODY_TOP = 320                           # everything from ABOUT // DOSSIER downwards
+STACK_WIDGETS = {"widget_1789911437611", "widget_1789914059752", "widget_1789911536345"}  # tech stack cards -> clickable tiles
+BODY_TOP = (320, 524)                    # ABOUT // DOSSIER .. divider
+BODY_BOTTOM = (758, 1380)                # GITHUB METRICS .. Minecraft terminal
+README_TEMPLATE = ROOT / "templates" / "README.md"
+ICONS = ROOT / "templates" / "icons"
 
 API = "https://api.github.com"
 NOW = datetime.now(timezone.utc)
@@ -658,7 +662,7 @@ def write_outputs(svg: str) -> None:
     style, widgets, footer = split_widgets(svg)
     by_id = {w[2]: w for w in widgets}
 
-    # 1. header card (avatar + core stack)
+    # 1. header card (avatar + repositories)
     write("header.svg", canvas(style, by_id[HEADER_WIDGET][3], 800, 260))
 
     # 2. social pills, one file each so the README can link them
@@ -674,10 +678,93 @@ def write_outputs(svg: str) -> None:
         )
         write(f"pill-{name}.svg", pill)
 
-    # 3. body: every other widget, moved up so ABOUT // DOSSIER starts at y=0
-    body = "".join(shift(w[3], BODY_TOP) for w in widgets if w[2] not in (HEADER_WIDGET, PILLS_WIDGET))
-    footer = re.sub(r'y="(\d+)"', lambda m: f'y="{int(m.group(1)) - BODY_TOP}"', footer, count=1)
-    write("body.svg", canvas(style, body + footer, 800, 1380 - BODY_TOP))
+    # 3. body, split around the tech stack so the stack can be real links
+    def band(name: str, top: int, bottom: int) -> None:
+        part = "".join(shift(w[3], top) for w in widgets if top <= w[1] < bottom and w[2] not in STACK_WIDGETS | {HEADER_WIDGET, PILLS_WIDGET})
+        write(name, canvas(style, part, 800, bottom - top))
+
+    band("body-top.svg", *BODY_TOP)
+    body_footer = re.sub(r'y="(\d+)"', lambda m: f'y="{int(m.group(1)) - BODY_BOTTOM[0]}"', footer, count=1)
+    part = "".join(shift(w[3], BODY_BOTTOM[0]) for w in widgets if w[1] >= BODY_BOTTOM[0])
+    write("body-bottom.svg", canvas(style, part + body_footer, 800, BODY_BOTTOM[1] - BODY_BOTTOM[0]))
+
+    # 4. tech stack tiles + README
+    write_readme(write_stack_tiles())
+
+
+# --------------------------------------------------------------------------- #
+# Tech stack: one black tile per icon so every icon can be an <a> in the README
+# --------------------------------------------------------------------------- #
+TILE = 64
+BG, BORDER, LABEL = "#060606", "#252525", "#7a7a7a"
+TILE_STYLE = (
+    "<style>.tile{opacity:0;animation:tile-in .6s cubic-bezier(.22,1,.36,1) forwards}"
+    "@keyframes tile-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}</style>"
+)
+
+
+def tile_svg(width: int, inner: str, first: bool, last: bool) -> str:
+    edges = [f'<rect x="0" y="0.5" width="{width}" height="1" fill="{BORDER}"/>',
+             f'<rect x="0" y="{TILE - 1.5}" width="{width}" height="1" fill="{BORDER}"/>']
+    if first:
+        edges.append(f'<rect x="0.5" y="0" width="1" height="{TILE}" fill="{BORDER}"/>')
+    if last:
+        edges.append(f'<rect x="{width - 1.5}" y="0" width="1" height="{TILE}" fill="{BORDER}"/>')
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{TILE}" viewBox="0 0 {width} {TILE}">'
+        f'{TILE_STYLE}<rect width="{width}" height="{TILE}" fill="{BG}"/>{"".join(edges)}{inner}</svg>\n'
+    )
+
+
+def icon_markup(name: str) -> str:
+    src = (ICONS / f"{name}.svg").read_text(encoding="utf-8")
+    body = re.search(r"<svg[^>]*>(.*)</svg>", src, re.S).group(1)
+    size = 44
+    off = (TILE - size) // 2
+    return f'<svg x="{off}" y="{off}" width="{size}" height="{size}" viewBox="0 0 256 256">{body}</svg>'
+
+
+def write_stack_tiles() -> list[dict]:
+    """Emit dist/stack/*.svg and return rows with the paths the README needs."""
+    (DIST / "stack").mkdir(parents=True, exist_ok=True)
+    rows = []
+    for row in CONFIG["stack"]:
+        slug = re.sub(r"[^a-z0-9]+", "-", row["label"].lower()).strip("-")
+        label_w = 24 + round(len(row["label"]) * 7.4) + 20
+        label = (
+            f'<text class="tile" x="24" y="{TILE / 2 + 4}" fill="{LABEL}" font-family="Inter, \'Segoe UI\', sans-serif" '
+            f'font-size="11" font-weight="500" letter-spacing="2">{esc(row["label"])}</text>'
+        )
+        label_file = f"stack/label-{slug}.svg"
+        write(label_file, tile_svg(label_w, label, first=True, last=False))
+        tiles = []
+        for i, item in enumerate(row["items"]):
+            inner = f'<g class="tile" style="animation-delay:{120 + 70 * i}ms">{icon_markup(item["icon"])}</g>'
+            file = f"stack/{slug}-{item['icon']}.svg"
+            write(file, tile_svg(TILE, inner, first=False, last=i == len(row["items"]) - 1))
+            tiles.append({"file": file, "url": item["url"], "alt": item.get("name", item["icon"])})
+        rows.append({"label": row["label"], "label_file": label_file, "tiles": tiles})
+    return rows
+
+
+def write_readme(rows: list[dict]) -> None:
+    lines = []
+    for row in rows:
+        imgs = [f'<img src="./dist/{row["label_file"]}" alt="{esc(row["label"])}" height="{TILE}">']
+        imgs += [
+            f'<a href="{esc(t["url"])}"><img src="./dist/{t["file"]}" alt="{esc(t["alt"])}" title="{esc(t["alt"])}" height="{TILE}"></a>'
+            for t in row["tiles"]
+        ]
+        lines.append("<div>" + "".join(imgs) + "</div>")  # no whitespace between tiles -> no gaps
+    stack_html = "\n".join(lines)
+
+    links = CONFIG["links"]
+    readme = README_TEMPLATE.read_text(encoding="utf-8")
+    readme = readme.replace("{{STACK}}", stack_html)
+    for key, url in links.items():
+        readme = readme.replace("{{LINK_" + key.upper() + "}}", esc(url))
+    (ROOT / "README.md").write_text(readme, encoding="utf-8", newline="\n")
+    print("  wrote README.md")
 
 
 if __name__ == "__main__":
