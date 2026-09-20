@@ -1,0 +1,359 @@
+{
+  "username": "Yusufo9",
+  "widgets": [
+    {
+      "instanceId": "widget_1789911437611",
+      "widgetId": "tech-stack",
+      "position": {
+        "x": 0,
+        "y": 524
+      },
+      "size": {
+        "width": 464,
+        "height": 123
+      },
+      "config": {
+        "selectedTechs": [
+          "linux",
+          "docker",
+          "git",
+          "github",
+          "bash",
+          "mongodb",
+          "nginx",
+          "mariadb"
+        ],
+        "customTitle": "DEVOPS // BACKEND",
+        "theme": "dark",
+        "perLine": 12,
+        "showTitle": true,
+        "animationType": "slide-right",
+        "animationPreviewKey": 2,
+        "animationDuration": 600
+      },
+      "locked": false,
+      "visible": true,
+      "zIndex": 3
+    },
+    {
+      "instanceId": "widget_1789911536345",
+      "widgetId": "tech-stack",
+      "position": {
+        "x": 0,
+        "y": 647
+      },
+      "size": {
+        "width": 800,
+        "height": 109
+      },
+      "config": {
+        "selectedTechs": [
+          "js",
+          "ts",
+          "react",
+          "nextjs",
+          "nodejs",
+          "tailwind",
+          "html",
+          "css",
+          "vue"
+        ],
+        "customTitle": "Web Stack",
+        "showTitle": true,
+        "animationType": "slide-right",
+        "animationPreviewKey": 3,
+        "animationDuration": 600
+      },
+      "locked": false,
+      "visible": true,
+      "zIndex": 3
+    },
+    {
+      "instanceId": "widget_1789911702152",
+      "widgetId": "stats",
+      "position": {
+        "x": 0,
+        "y": 758
+      },
+      "size": {
+        "width": 800,
+        "height": 152
+      },
+      "config": {},
+      "locked": false,
+      "visible": true,
+      "zIndex": 5
+    },
+    {
+      "instanceId": "widget_1789911712130",
+      "widgetId": "ascii-text",
+      "position": {
+        "x": 0,
+        "y": 360
+      },
+      "size": {
+        "width": 800,
+        "height": 140
+      },
+      "config": {
+        "customText": "MY DEV TECH STACK",
+        "asciiFont": "block",
+        "charSpacing": 1,
+        "fontSize": 12,
+        "charset": "default",
+        "customCharset": "",
+        "asciiLines": [
+          "██    ██ ██    ██      ██████▄  ████████ ██    ██      ████████ ████████  ▄████▄  ██    ██       ▄█████  ████████  ▄████▄   ▄████▄  ██    ██",
+          "████████  ▀████▀       ██    ██ ██       ██    ██         ██    ██       ██    ▀▀ ██    ██      ██          ██    ██    ██ ██    ▀▀ ██  ▄█▀ ",
+          "██ ▀▀ ██    ██         ██    ██ ██████   ██    ██         ██    ██████   ██       ████████       ▀████▄     ██    ████████ ██       █████▄  ",
+          "██    ██    ██         ██    ██ ██        ▀████▀          ██    ██       ██    ▄▄ ██    ██            ██    ██    ██    ██ ██    ▄▄ ██  ▀██▄",
+          "██    ██    ██         ██████▀  ████████    ▀▀            ██    ████████  ▀████▀  ██    ██      ██████▀     ██    ██    ██  ▀████▀  ██    ██"
+        ],
+        "animationType": "fade-in",
+        "animationPreviewKey": 5,
+        "detail": "high",
+        "cols": 85,
+        "hideDecorations": false,
+        "customTitle": "Role",
+        "showTitle": false,
+        "backgroundColor": "#0d1117",
+        "hideBorder": false,
+        "accentColor": "#c5ff4a",
+        "animationDuration": 1000
+      },
+      "locked": false,
+      "visible": true,
+      "zIndex": 6
+    },
+    {
+      "instanceId": "widget_1789911844959",
+      "widgetId": "streak-stats",
+      "position": {
+        "x": 384,
+        "y": 912
+      },
+      "size": {
+        "width": 408,
+        "height": 210
+      },
+      "config": {},
+      "locked": false,
+      "visible": true,
+      "zIndex": 8
+    },
+    {
+      "instanceId": "widget_1789911876234",
+      "widgetId": "codeweb-retro-grid",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "size": {
+        "width": 800,
+        "height": 260
+      },
+      "config": {
+        "selectedTechs": [
+          "git",
+          "github",
+          "linux",
+          "vscode",
+          "cpp",
+          "py",
+          "java"
+        ],
+        "animationType": "slide-down",
+        "animationPreviewKey": 25,
+        "staticMode": true,
+        "showTitle": false,
+        "technologies": [
+          "git",
+          "github",
+          "linux",
+          "vscode",
+          "cpp",
+          "py",
+          "java"
+        ],
+        "displayMode": "logo",
+        "hideDecorations": false,
+        "customTitle": "Hello World",
+        "title": "🎯CORE STACK⚡",
+        "animationDuration": 1500
+      },
+      "locked": false,
+      "visible": true,
+      "zIndex": 9
+    },
+    {
+      "instanceId": "widget_1789912840027",
+      "widgetId": "codeweb-social-badge",
+      "position": {
+        "x": 0,
+        "y": 268
+      },
+      "size": {
+        "width": 800,
+        "height": 44
+      },
+      "config": {
+        "platforms": [
+          "github",
+          "discord",
+          "gmail"
+        ],
+        "label_github": "Yusufo9",
+        "animSpeed": "14s",
+        "label_portfolio": "vbcfgv",
+        "renderMode": "multi",
+        "label_discord": "chaotic_plasm",
+        "label_gmail": "",
+        "hideBorder": false,
+        "hideDecorations": false,
+        "animationType": "slide-down",
+        "animationPreviewKey": 2,
+        "animationDuration": 1000
+      },
+      "locked": false,
+      "visible": true,
+      "zIndex": 8
+    },
+    {
+      "instanceId": "widget_1789912949759",
+      "widgetId": "surveillance-title",
+      "position": {
+        "x": 0,
+        "y": 320
+      },
+      "size": {
+        "width": 800,
+        "height": 40
+      },
+      "config": {
+        "accentColor": "#c5ff4a",
+        "customTitle": "ABOUT // DOSSIER",
+        "title": "ABOUT // DOSSIER",
+        "customRef": "HELLO WORLD!",
+        "referenceTag": "HELLO WORLD!",
+        "ledColor": "#ff5555",
+        "secondaryColor": "#c084fc",
+        "animationType": "slide-down",
+        "animationPreviewKey": 3,
+        "animationDuration": 1000,
+        "showLed": true
+      },
+      "locked": false,
+      "visible": true,
+      "zIndex": 9
+    },
+    {
+      "instanceId": "widget_1789913170112",
+      "widgetId": "minecraft-chat",
+      "position": {
+        "x": 0,
+        "y": 1124
+      },
+      "size": {
+        "width": 800,
+        "height": 240
+      },
+      "config": {
+        "hideBorder": false,
+        "animationType": "zoom-in",
+        "animationPreviewKey": 16,
+        "animationEasing": "ease-in",
+        "animationDuration": 1000
+      },
+      "locked": false,
+      "visible": true,
+      "zIndex": 10
+    },
+    {
+      "instanceId": "widget_1789914023690",
+      "widgetId": "divider",
+      "position": {
+        "x": 0,
+        "y": 494
+      },
+      "size": {
+        "width": 800,
+        "height": 30
+      },
+      "config": {
+        "accentColor": "#c5ff4a"
+      },
+      "locked": false,
+      "visible": true,
+      "zIndex": 11
+    },
+    {
+      "instanceId": "widget_1789914059752",
+      "widgetId": "tech-stack",
+      "position": {
+        "x": 464,
+        "y": 524
+      },
+      "size": {
+        "width": 336,
+        "height": 123
+      },
+      "config": {
+        "selectedTechs": [
+          "cpp",
+          "py",
+          "java",
+          "lua"
+        ],
+        "lockAspectRatio": false,
+        "customTitle": "PROBLEM SOLVING",
+        "animationType": "slide-right",
+        "animationPreviewKey": 3,
+        "animationDuration": 600
+      },
+      "locked": false,
+      "visible": true,
+      "zIndex": 12
+    },
+    {
+      "instanceId": "widget_1789914565756",
+      "widgetId": "premium-ascii-dna",
+      "position": {
+        "x": 4,
+        "y": 915
+      },
+      "size": {
+        "width": 380,
+        "height": 204
+      },
+      "config": {
+        "lockAspectRatio": false,
+        "transparentBackground": true,
+        "backgroundColor": "#060606",
+        "accentColor": "#ffb454",
+        "secondaryColor": "#ff5555",
+        "borderColor": "#3e2815",
+        "showArchetype": true,
+        "animated": true
+      },
+      "locked": false,
+      "visible": true,
+      "zIndex": 13
+    }
+  ],
+  "globalStyles": {
+    "backgroundColor": "#060606",
+    "borderColor": "#252525",
+    "textColor": "#e5e5e5",
+    "accentColor": "#c5ff4a",
+    "fontFamily": "Inter",
+    "borderRadius": 0,
+    "transparentBackground": true,
+    "templateStyle": "blank"
+  },
+  "templateId": "blank",
+  "profileSlug": "default",
+  "metadata": {
+    "revision": "rev_1789916229166_cdetu",
+    "updatedAt": "2026-09-20T14:57:10.699Z"
+  }
+}
