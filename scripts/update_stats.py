@@ -83,7 +83,6 @@ query($login: String!, $after: String) {
     avatarUrl(size: 200)
     followers { totalCount }
     following { totalCount }
-    gists(privacy: PUBLIC) { totalCount }
     repositories(first: 100, after: $after, ownerAffiliations: OWNER, privacy: PUBLIC) {
       totalCount
       pageInfo { hasNextPage endCursor }
@@ -128,7 +127,6 @@ def fetch_user() -> dict:
         "avatar_url": base["avatarUrl"],
         "followers": base["followers"]["totalCount"],
         "following": base["following"]["totalCount"],
-        "gists": base["gists"]["totalCount"],
         "repos": base["repositories"]["totalCount"],
         "stars": stars,
         "forks": forks,
@@ -280,7 +278,6 @@ def main() -> None:
         "FOLLOWING": esc(user["following"]),
         "FORKS": esc(user["forks"]),
         "COMMITS": esc(contrib["commits"]),
-        "GISTS": esc(user["gists"]),
         "TOTAL_CONTRIBUTIONS": esc(contrib["total_contributions"]),
         "CURRENT_STREAK": esc(contrib["current_streak"]),
         "CURRENT_STREAK_RANGE": esc(
