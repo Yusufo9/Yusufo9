@@ -105,10 +105,11 @@ query($login: String!, $after: String) {
     following { totalCount }
     starredRepositories { totalCount }
     repositoriesContributedTo(contributionTypes: [COMMIT, PULL_REQUEST, ISSUE, REPOSITORY]) { totalCount }
+    pinnedItems(first: 6, types: REPOSITORY) { nodes { ... on Repository { name } } }
     repositories(first: 100, after: $after, ownerAffiliations: OWNER, privacy: PUBLIC, orderBy: {field: PUSHED_AT, direction: DESC}) {
       totalCount
       pageInfo { hasNextPage endCursor }
-      nodes { stargazerCount forkCount isFork primaryLanguage { name } }
+      nodes { name description stargazerCount forkCount isFork isArchived pushedAt primaryLanguage { name color } }
     }
   }
 }
@@ -137,11 +138,13 @@ query($login: String!, $from: DateTime!, $to: DateTime!) {
 def fetch_user() -> dict:
     stars = forks = forked = 0
     languages: dict[str, int] = {}
+    nodes: list[dict] = []
     after, base = None, None
     while True:
         data = gql(USER_QUERY, {"login": USERNAME, "after": after})["user"]
         base = base or data
         repos = data["repositories"]
+        nodes.extend(repos["nodes"])
         for n in repos["nodes"]:
             stars += n["stargazerCount"]
             forks += n["forkCount"]
@@ -154,7 +157,10 @@ def fetch_user() -> dict:
         after = repos["pageInfo"]["endCursor"]
 
     profile = rest(f"/users/{USERNAME}")  # public_gists isn't exposed to GITHUB_TOKEN via GraphQL
+    pinned = [n["name"] for n in base["pinnedItems"]["nodes"]]
+    nodes.sort(key=lambda n: (n["name"] not in pinned, pinned.index(n["name"]) if n["name"] in pinned else 0))
     return {
+        "repo_list": [n for n in nodes if not n["isArchived"]][:8],
         "created_at": datetime.fromisoformat(base["createdAt"].replace("Z", "+00:00")),
         "avatar_url": base["avatarUrl"],
         "followers": base["followers"]["totalCount"],
@@ -510,6 +516,52 @@ def render_dna(dna: list[tuple[str, int]]) -> str:
 
 
 # --------------------------------------------------------------------------- #
+# Repositories carousel (header card, replaces the old CORE STACK pills)
+# --------------------------------------------------------------------------- #
+CARD_W, CARD_H, CARD_PITCH = 492, 56, 64
+REPO_ICON = (
+    "M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 "
+    "0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 "
+    "0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 "
+    ".25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"
+)
+
+
+def repo_card(repo: dict, y: int) -> str:
+    lang = repo.get("primaryLanguage") or {}
+    desc = clip(repo.get("description") or "No description yet", 62)
+    meta = f"★ {repo['stargazerCount']}   ⑂ {repo['forkCount']}"
+    parts = [
+        f'<g class="repo-card" transform="translate(0, {y})">',
+        f'<rect width="{CARD_W}" height="{CARD_H}" rx="10" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)"/>',
+        f'<g transform="translate(16, 14) scale(1.1)"><path fill="#8b949e" d="{REPO_ICON}"/></g>',
+        f'<text x="44" y="24" fill="#f5f5f5" font-size="13" font-weight="700">{esc(repo["name"])}</text>',
+        f'<text x="44" y="42" fill="rgba(255,255,255,0.5)" font-size="11">{esc(desc)}</text>',
+        f'<text x="{CARD_W - 16}" y="42" text-anchor="end" fill="rgba(255,255,255,0.45)" font-size="11">{esc(meta)}</text>',
+    ]
+    if lang:
+        parts += [
+            f'<circle cx="{CARD_W - 16 - 4}" cy="20" r="4" fill="{lang.get("color") or "#8b949e"}"/>',
+            f'<text x="{CARD_W - 16 - 14}" y="24" text-anchor="end" fill="rgba(255,255,255,0.7)" font-size="11">{esc(lang["name"])}</text>',
+        ]
+    parts.append("</g>")
+    return "".join(parts)
+
+
+def render_repos(repos: list[dict]) -> dict[str, str]:
+    if not repos:
+        repos = [{"name": "No public repositories yet", "description": "The world is still being generated...", "stargazerCount": 0, "forkCount": 0}]
+    track_h = CARD_PITCH * len(repos)
+    loop = repos + repos  # second copy makes the scroll seamless
+    cards = "".join(repo_card(r, CARD_PITCH * i) for i, r in enumerate(loop))
+    return {
+        "REPO_CARDS": cards,
+        "REPO_TRACK_HEIGHT": str(track_h),
+        "REPO_SCROLL_SECONDS": str(max(6, 3 * len(repos))),
+    }
+
+
+# --------------------------------------------------------------------------- #
 # Main
 # --------------------------------------------------------------------------- #
 def main() -> None:
@@ -541,8 +593,10 @@ def main() -> None:
         "MC_PROMPT": prompt,
         "DNA_FRAMES": render_dna(dna),
         "UPDATED_AT": esc(NOW.strftime("%Y-%m-%d %H:%M UTC")),
+        **render_repos(user["repo_list"]),
     }
-    summary = {k: v for k, v in values.items() if k not in ("AVATAR_DATA_URI", "MC_CHAT_LINES", "DNA_FRAMES")}
+    summary = {k: v for k, v in values.items() if k not in ("AVATAR_DATA_URI", "MC_CHAT_LINES", "DNA_FRAMES", "REPO_CARDS")}
+    print(f"  repos: {[r['name'] for r in user['repo_list']]}")
     print("  " + json.dumps(summary, ensure_ascii=False))
     print("  DNA " + ", ".join(f"{k} {v}%" for k, v in dna))
     print(f"  events: {len(events)} -> {[e['type'] for e in events[:4]]}")

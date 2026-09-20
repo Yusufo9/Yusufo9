@@ -59,6 +59,15 @@
 <stop offset="100%" stop-color="#555555"></stop>
       <animateTransform attributeName="gradientTransform" type="rotate" from="0 0.5 0.5" to="360 0.5 0.5" dur="14s" repeatCount="indefinite" />
     </linearGradient>
+    <linearGradient id="grad-pill-telegram-611-2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"></stop>
+<stop offset="10%" stop-color="#111111"></stop>
+<stop offset="50%" stop-color="#eeeeee"></stop>
+<stop offset="60%" stop-color="#2AABEE"></stop>
+<stop offset="80%" stop-color="#111111"></stop>
+<stop offset="100%" stop-color="#555555"></stop>
+      <animateTransform attributeName="gradientTransform" type="rotate" from="0 0.5 0.5" to="360 0.5 0.5" dur="14s" repeatCount="indefinite" />
+    </linearGradient>
   
       </defs>
     <g id="pill-gmail-499-2">
