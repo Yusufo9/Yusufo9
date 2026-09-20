@@ -24,7 +24,7 @@
         ]
       },
       {
-        "label": "PROBLEM SOLVING", "width": 336, "height": 123, "icon": 60, "pitch": 70,
+        "label": "CORE PROBLEM SOLVING ", "width": 336, "height": 123, "icon": 60, "pitch": 70,
         "items": [
           { "icon": "cpp",    "name": "C++",    "url": "https://isocpp.org/" },
           { "icon": "python", "name": "Python", "url": "https://www.python.org/" },
