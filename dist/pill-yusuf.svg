@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="95" height="40" viewBox="0 0 95 40" font-family="'Courier New', Courier, 'Lucida Console', monospace">
+  <title>Yusuf</title>
+  <style>
+    .pop { opacity: 0; animation: pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    .glowBorder { animation: borderGlow 2.8s ease-in-out infinite; }
+    .pulse { animation: pulse 2.8s ease-in-out infinite; }
+    .pixel { shape-rendering: crispEdges; }
+    @keyframes pop { from { opacity: 0; transform: scale(0.8); transform-box: fill-box; transform-origin: center; } to { opacity: 1; transform: scale(1); transform-box: fill-box; transform-origin: center; } }
+    @keyframes borderGlow { 0%, 100% { stroke-opacity: 0.5; } 50% { stroke-opacity: 1; } }
+    @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+  </style>
+  <defs>
+    <filter id="glow" x="-30%" y="-60%" width="160%" height="220%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur">
+        <animate attributeName="stdDeviation" values="1.5;4;1.5" dur="2.8s" repeatCount="indefinite"
+                 calcMode="spline" keySplines="0.42 0 0.58 1; 0.42 0 0.58 1"/>
+      </feGaussianBlur>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g class="pop">
+    <rect x="3" y="4" width="89" height="32" rx="16" fill="#0d1117" stroke="#ffb454" stroke-width="1.5" class="glowBorder" filter="url(#glow)"/>
+    <rect x="3" y="4" width="89" height="32" rx="16" fill="#ffb454" fill-opacity="0.08"/>
+    <rect x="16" y="16" width="8" height="8" fill="#ffb454" class="pixel pulse"/>
+    <text x="58" y="24.5" font-size="13" font-weight="700" fill="#ffb454" text-anchor="middle" letter-spacing="1">Yusuf</text>
+  </g>
+</svg>

@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="900" height="230" viewBox="0 0 900 230" font-family="'Courier New', Courier, 'Lucida Console', monospace">
+  <title>{{USERNAME}} - profile header</title>
+  <style>
+    .fade-up { opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    .fade-in { opacity: 0; animation: fadeIn 1.2s ease-in-out forwards; }
+    .badge   { opacity: 0; animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    .pulse   { animation: pulse 3s ease-in-out infinite; }
+    .blink   { animation: blink 1.1s steps(2, start) infinite; }
+    .title   { font-weight: 700; letter-spacing: 3px; }
+    .pixel   { shape-rendering: crispEdges; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes popIn  { from { opacity: 0; transform: scale(0.85); transform-box: fill-box; transform-origin: center; } to { opacity: 1; transform: scale(1); transform-box: fill-box; transform-origin: center; } }
+    @keyframes pulse  { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+    @keyframes blink  { to { visibility: hidden; } }
+  </style>
+
+  <defs>
+    <!-- Neon glow: SMIL-animated blur radius = smooth ease-in/out breathing glow -->
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur">
+        <animate attributeName="stdDeviation" values="2;6;2" dur="3.2s" repeatCount="indefinite"
+                 calcMode="spline" keySplines="0.42 0 0.58 1; 0.42 0 0.58 1"/>
+      </feGaussianBlur>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="textGlow" x="-20%" y="-40%" width="140%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- Pixel-art stepped frame (used for both the clip and the outline) -->
+    <path id="pixelFrame" d="M56 35 H174 V43 H182 V51 H190 V169 H182 V177 H174 V185 H56 V177 H48 V169 H40 V51 H48 V43 H56 Z"/>
+    <clipPath id="avatarClip"><use href="#pixelFrame"/></clipPath>
+    <clipPath id="cardClip"><rect width="900" height="230" rx="10"/></clipPath>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M20 0 H0 V20" fill="none" stroke="#21262d" stroke-width="0.6"/>
+    </pattern>
+    <linearGradient id="scan" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffb454" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#ffb454" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#ffb454" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Card -->
+  <rect width="900" height="230" rx="10" fill="#0d1117"/>
+  <rect width="900" height="230" rx="10" fill="url(#grid)"/>
+  <rect x="0.75" y="0.75" width="898.5" height="228.5" rx="10" fill="none" stroke="#ffb454" stroke-opacity="0.65" stroke-width="1.5" filter="url(#glow)"/>
+
+  <!-- Moving scanline (SMIL) -->
+  <rect x="0" y="-40" width="900" height="40" fill="url(#scan)" clip-path="url(#cardClip)">
+    <animate attributeName="y" from="-40" to="230" dur="6s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1"/>
+  </rect>
+
+  <!-- Corner pixels -->
+  <g fill="#ffb454" class="pixel pulse">
+    <rect x="10" y="10" width="6" height="6"/><rect x="16" y="10" width="6" height="6"/><rect x="10" y="16" width="6" height="6"/>
+    <rect x="884" y="10" width="6" height="6"/><rect x="878" y="10" width="6" height="6"/><rect x="884" y="16" width="6" height="6"/>
+    <rect x="10" y="214" width="6" height="6"/><rect x="16" y="214" width="6" height="6"/><rect x="10" y="208" width="6" height="6"/>
+    <rect x="884" y="214" width="6" height="6"/><rect x="878" y="214" width="6" height="6"/><rect x="884" y="208" width="6" height="6"/>
+  </g>
+
+  <!-- Avatar with pixel frame -->
+  <g class="fade-in">
+    <use href="#pixelFrame" fill="#ffb454" fill-opacity="0.12" filter="url(#glow)"/>
+    <image href="{{AVATAR_DATA_URI}}" x="40" y="35" width="150" height="150" clip-path="url(#avatarClip)" preserveAspectRatio="xMidYMid slice"/>
+    <use href="#pixelFrame" fill="none" stroke="#ffb454" stroke-width="3" class="pixel" filter="url(#glow)"/>
+    <!-- online dot -->
+    <rect x="176" y="171" width="12" height="12" fill="#0d1117" class="pixel"/>
+    <rect x="178" y="173" width="8" height="8" fill="#55ff55" class="pixel pulse"/>
+  </g>
+
+  <!-- Name + tagline -->
+  <g class="fade-up" style="animation-delay: 0.15s">
+    <text x="250" y="66" font-size="14" fill="#7a7a7a" letter-spacing="2">&gt; whoami</text>
+    <text x="250" y="102" font-size="34" fill="#ffb454" class="title" filter="url(#textGlow)">{{USERNAME}}<tspan fill="#ff5555" class="blink">_</tspan></text>
+  </g>
+  <g class="fade-up" style="animation-delay: 0.3s">
+    <text x="250" y="126" font-size="14" fill="#e5e5e5">{{TAGLINE}}</text>
+  </g>
+
+  <!-- Core stack -->
+  <g class="fade-up" style="animation-delay: 0.45s">
+    <rect x="250" y="139" width="6" height="6" fill="#c5ff4a" class="pixel"/>
+    <text x="262" y="145" font-size="11" fill="#c5ff4a" letter-spacing="2" font-weight="700">CORE STACK</text>
+    <line x1="352" y1="142" x2="860" y2="142" stroke="#21262d" stroke-width="1"/>
+  </g>
+  <g font-weight="700">{{CORE_STACK_BADGES}}</g>
+
+  <!-- Footer -->
+  <text x="860" y="216" font-size="9" fill="#7a7a7a" text-anchor="end" letter-spacing="1" class="fade-in" style="animation-delay: 1s">synced {{UPDATED_AT}}</text>
+</svg>
